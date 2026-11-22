@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LogicLab — Virtual Digital Logic Trainer</title>
+<script>try{var _t=localStorage.getItem("ll.ui");if(_t)document.documentElement.dataset.theme=_t}catch(e){}</script>
+<style>
+:root{color-scheme:dark;--bg:#0a1118;--pn:#111c26;--ln:#27394a;--tx:#e3edf4;--mu:#8aa0b3;--ac:#2dd4bf;--ac2:#fbbf24;--r:8px}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.45 'Segoe UI',Inter,system-ui,sans-serif;background:radial-gradient(1200px 600px at 70% -10%,#12283a,var(--bg));color:var(--tx);display:flex;flex-direction:column;height:100vh}
+header{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 12px;background:linear-gradient(180deg,#0e1a25,#0a141c);border-bottom:2px solid var(--ac);box-shadow:0 4px 18px #0008}
+h1{font-size:19px;margin:0 12px 0 0;letter-spacing:.02em;font-weight:800;background:linear-gradient(90deg,var(--ac),#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent}h3{margin:10px 0 4px;font-size:13px}
+button,select,input{font:inherit;color:var(--tx);background:#213140;border:1px solid var(--ln);border-radius:var(--r);padding:5px 10px;transition:background .15s,border-color .15s,transform .1s}
+button{cursor:pointer}button:hover{background:#2c4256;border-color:#4b6a85}button:active{transform:translateY(1px)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+main{flex:1;display:flex;min-height:0}
+aside{width:270px;box-shadow:inset 0 0 0 1px #0004;overflow:auto;padding:10px;background:var(--pn);flex:none}
+aside.off{display:none}
+#mid{flex:1;display:flex;flex-direction:column;min-width:0}
+#bw{overflow:auto;flex:1;padding:12px}#svg{border-radius:12px;box-shadow:0 10px 40px #000a,0 0 0 1px #ffffff14}#tst{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);z-index:120;background:#0b1620;border:1px solid var(--ac);color:var(--tx);padding:8px 16px;border-radius:20px;box-shadow:0 6px 24px #000a;opacity:0;pointer-events:none;transition:opacity .25s}#tst.on{opacity:1}
+#bot{max-height:45%;overflow:auto;border-top:2px solid var(--ln);padding:8px 12px;background:var(--pn);display:flex;flex-wrap:wrap;gap:20px}
+#bot>div{flex:1 1 320px}
+#st{display:flex;gap:16px;flex-wrap:wrap;padding:4px 10px;background:#0b1218;font-size:12px;color:var(--mu)}
+.ex{display:block;width:100%;text-align:left;margin:3px 0}.ex.on{border-color:var(--ac)}
+table{border-collapse:collapse}td,th{border:1px solid var(--ln);padding:3px 9px;text-align:center}
+tr.live td{background:#1d3a44}.ok{color:#4ade80}.bad{color:#f87171}.w{color:#fbbf24}
+label{display:block;margin:5px 0}select{width:100%}
+dialog{background:var(--pn);color:var(--tx);border:1px solid var(--ln);max-width:560px}
+pre{white-space:pre-wrap}svg{user-select:none;-webkit-user-select:none}#bw.fs{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex}#bw.fs svg{margin:auto;max-width:none!important;min-width:700px!important;width:min(100%,calc((100vh - 16px)*1.85))!important}#fsbar{display:none;position:fixed;top:6px;right:8px;z-index:60;gap:5px;flex-wrap:wrap}#bw.fs #fsbar{display:flex}
+#quiz{position:fixed;inset:0;z-index:80;background:rgba(5,10,14,.88);display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto}#quiz[hidden]{display:none}.qp{background:var(--pn);border:1px solid var(--ln);border-radius:8px;width:min(680px,100%);max-height:100%;overflow:auto;padding:18px}.qp h2{margin:0 0 8px}.qo{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px}.qo.good{border-color:#4ade80;background:#14351f}.qo.miss{border-color:#f87171;background:#3a1a1a}.qbar{height:6px;background:#213140;border-radius:3px;overflow:hidden;margin-top:6px}.qbar>i{display:block;height:100%;background:var(--ac)}
+.grp{display:flex;gap:4px;flex-wrap:wrap;padding-right:8px;margin-right:2px;border-right:1px solid var(--ln)}.grp:last-of-type{border:0}button[aria-pressed=true]{border-color:var(--ac);background:#14403d}button:disabled{opacity:.45;cursor:default}.pri{background:#17524b;border-color:var(--ac)}th{background:#1c2c3a;color:var(--ac)}td{font-variant-numeric:tabular-nums}h3{color:var(--ac);letter-spacing:.03em}.pri{box-shadow:0 0 12px #2dd4bf44}::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#2c4256;border-radius:6px}::-webkit-scrollbar-track{background:transparent}
+aside{background:linear-gradient(180deg,#132330,#0e1923)}.ex{border-left:3px solid transparent;background:#162634}.ex:hover{border-left-color:#4b6a85}.ex.on{border-left-color:var(--ac);background:#143a3a;box-shadow:0 0 14px #2dd4bf22}
+.grp{border:0!important;background:#ffffff08;border-radius:10px;padding:3px 6px}button{box-shadow:0 1px 0 #ffffff12 inset}button[aria-pressed=true]{box-shadow:0 0 10px #2dd4bf33}
+#st{background:linear-gradient(90deg,#0b1620,#0e1d2a);border-top:1px solid var(--ln)}dialog{border-radius:14px;box-shadow:0 20px 60px #000c}dialog::backdrop{background:#000a;backdrop-filter:blur(3px)}.qp{border-radius:14px;box-shadow:0 20px 60px #000c}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+header{position:sticky;top:0;z-index:40}h1{display:flex;align-items:center;gap:8px;background:none;color:var(--tx);-webkit-text-fill-color:initial}h1 span{background:linear-gradient(90deg,var(--ac),#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:20px}h1 small{font-size:11px;font-weight:400;color:var(--mu);margin-left:2px}.lgo{filter:drop-shadow(0 0 6px #2dd4bf66)}
+dialog{width:min(680px,94vw);max-width:none;padding:0;overflow:hidden}dialog[open]{display:flex;flex-direction:column;max-height:88vh}.dh{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:linear-gradient(90deg,#17303f,#122430);border-bottom:1px solid var(--ln)}.dh h3{margin:0;font-size:15px}#dx{border-radius:50%;width:30px;height:30px;padding:0;line-height:1}#db{padding:12px 16px;overflow:auto;flex:1}.df{padding:10px 14px;border-top:1px solid var(--ln);text-align:right;background:#0e1923}.df button{min-width:90px}
+tr.live td{background:#134e4a!important;color:#fff;font-weight:600}#tt>p{color:var(--mu);border:1px dashed var(--ln);border-radius:10px;padding:14px;text-align:center}.cp{margin-left:8px;padding:2px 10px}
+.grp::before{content:attr(aria-label);align-self:center;font-size:10px;color:#5f7f96;margin:0 3px 0 1px}.pri{background:linear-gradient(180deg,#1d7a6e,#14524b)}input:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 3px #2dd4bf22;outline:0}tr:nth-child(even) td{background:#ffffff05}
+#bot>div{background:#0d1822;border:1px solid var(--ln);border-radius:12px;padding:10px 14px}#exl .ex{border-radius:8px;padding:7px 10px}
+#cmd{position:fixed;inset:0;z-index:110;background:#050a0ecc;backdrop-filter:blur(3px);display:flex;justify-content:center;align-items:flex-start;padding-top:14vh}#cmd[hidden]{display:none}#cmd>div{width:min(520px,92vw);background:var(--pn);border:1px solid var(--ac);border-radius:14px;box-shadow:0 20px 60px #000c;overflow:hidden}#cmd input{width:100%;border:0;border-bottom:1px solid var(--ln);border-radius:0;padding:14px;font-size:15px;background:#0d1822}#cmd ul{list-style:none;margin:0;padding:6px;max-height:50vh;overflow:auto}#cmd li{padding:8px 12px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}#cmd li small{color:var(--mu)}#cmd li.on{background:#143a3a}
+.wt{margin:6px 0;padding-left:18px}.wt li{margin:5px 0}
+#trd>summary{cursor:pointer;font-weight:700;color:var(--ac);margin:12px 0 6px;font-size:13px;letter-spacing:.03em}.tr{list-style:none;margin:0 0 6px;padding:0}.tr ul{list-style:none;margin:2px 0 0 8px;padding-left:12px;border-left:1px dashed var(--ln)}.tr li{margin:5px 0;font-size:12px}ol.tr{list-style:decimal;padding-left:20px}
+.tb{display:inline-block;min-width:22px;text-align:center;border-radius:6px;padding:0 6px;font-weight:700;font-size:12px}.tb.h{background:#14532d;color:#86efac}.tb.l{background:#0f2a44;color:#93c5fd}.tb.x{background:#78350f;color:#fcd34d}
+html[data-theme=light]{color-scheme:light;--bg:#eef3f6;--pn:#ffffff;--ln:#c5d2db;--tx:#16222e;--mu:#52667a;--ac:#0f766e;--ac2:#b45309}
+html[data-theme=light] body{background:radial-gradient(1200px 600px at 70% -10%,#d8eaf2,var(--bg))}
+html[data-theme=light] header{background:linear-gradient(180deg,#fff,#eaf2f6);box-shadow:0 4px 14px #1e3a5f22}
+html[data-theme=light] button,html[data-theme=light] select,html[data-theme=light] input{background:#f3f7fa;color:var(--tx)}html[data-theme=light] button:hover{background:#e1ecf2;border-color:#8fb0c4}
+html[data-theme=light] aside{background:linear-gradient(180deg,#fff,#f0f5f8);box-shadow:inset 0 0 0 1px #0000000d}
+html[data-theme=light] .ex{background:#f1f6f9}html[data-theme=light] .ex:hover{border-left-color:#8fb0c4}html[data-theme=light] .ex.on{background:#d7f1ed;box-shadow:none}
+html[data-theme=light] #bot>div{background:#f8fbfc}html[data-theme=light] #st{background:linear-gradient(90deg,#fff,#e9f1f5)}html[data-theme=light] #tst{background:#fff;box-shadow:0 6px 24px #1e3a5f33}
+html[data-theme=light] button[aria-pressed=true]{background:#d0f0ea;box-shadow:none}html[data-theme=light] .pri{background:linear-gradient(180deg,#14a090,#0f766e);color:#fff;border-color:#0f766e;box-shadow:none}
+html[data-theme=light] th{background:#e1edf2}html[data-theme=light] tr:nth-child(even) td{background:#0000000a}html[data-theme=light] tr.live td{background:#cdeee9!important;color:#0b3b36}html[data-theme=light] tr[data-r]:hover td{background:#dcebf3}
+html[data-theme=light] .dh{background:linear-gradient(90deg,#e4f0f4,#f3f8fa)}html[data-theme=light] .df{background:#f3f7fa}html[data-theme=light] dialog{box-shadow:0 20px 60px #1e3a5f55}html[data-theme=light] dialog::backdrop{background:#1e3a5f66}
+html[data-theme=light] #cmd{background:#1e3a5f66}html[data-theme=light] #cmd input{background:#f3f7fa}html[data-theme=light] #cmd>div{box-shadow:0 20px 60px #1e3a5f66}html[data-theme=light] #cmd li.on{background:#d7f1ed}
+html[data-theme=light] #quiz{background:rgba(30,58,95,.55)}html[data-theme=light] .qp{box-shadow:0 20px 60px #1e3a5f55}html[data-theme=light] .qo.good{background:#dcfce7;border-color:#16a34a}html[data-theme=light] .qo.miss{background:#fee2e2;border-color:#dc2626}html[data-theme=light] .qbar{background:#dbe5ec}
+html[data-theme=light] .grp{background:#0000000a}html[data-theme=light] .grp::before{color:#6b8497}html[data-theme=light] .lgo{filter:none}
+html[data-theme=light] .tb.h{background:#dcfce7;color:#166534}html[data-theme=light] .tb.l{background:#dbeafe;color:#1e40af}html[data-theme=light] .tb.x{background:#fef3c7;color:#92400e}
+html[data-theme=light] .ok{color:#15803d}html[data-theme=light] .bad{color:#b91c1c}html[data-theme=light] .w{color:#b45309}html[data-theme=light] #svg{box-shadow:0 8px 28px #1e3a5f40,0 0 0 1px #00000018}
+html[data-theme=light] .rbar{background:#e1edf2}html[data-theme=light] ::-webkit-scrollbar-thumb{background:#b8c8d3}
+header.min .grp{display:none!important}header.min{padding:5px 12px}#bot.off{display:none}.tg{border-radius:20px}
+@media(max-width:900px){h1 small{display:none}}@media(pointer:coarse){button,select,input{min-height:38px}}tr[data-r]{cursor:pointer}tr[data-r]:hover td{background:#223a4a}.eg{margin:10px 0 2px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu)}.wl{display:flex;justify-content:space-between;align-items:center;gap:4px;font-size:12px;margin:2px 0}.wl button{padding:0 6px}.lg{font-size:12px;color:var(--mu)}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 8px;vertical-align:middle}.lg i:first-child{margin-left:0}
+#rep{position:fixed;inset:0;z-index:90;background:#cfd6dd;overflow:auto}#rep[hidden]{display:none}.rbar{position:sticky;top:0;display:flex;gap:6px;padding:8px;background:#0b1218}#rbody{background:#fff;color:#111;max-width:820px;margin:12px auto;padding:28px;font:14px/1.5 system-ui,sans-serif}#rbody h1{font-size:21px;margin:0 0 4px}#rbody h2{font-size:15px;margin:16px 0 4px;border-bottom:1px solid #999}#rbody td,#rbody th{border:1px solid #444;padding:3px 10px}#rbody th{background:#e5e9ee}#rbody input,#rbody textarea{background:#fff;color:#111;border:1px solid #888;width:100%;font:inherit}#rbody .f{display:flex;gap:10px}#rbody .f label{flex:1;margin:0}#rbody svg{width:100%;height:auto;border:1px solid #888}.rp{color:#15803d}.rf{color:#b91c1c}details summary{cursor:pointer}
+@media print{body{display:block!important;height:auto!important}body>*:not(#rep){display:none!important}#rep{position:static;background:#fff;overflow:visible}.rbar{display:none}#rbody{margin:0;padding:0;max-width:none}#rbody h2,#rbody table,#rbody svg{break-inside:avoid}}
+@media(max-width:800px){body{height:auto}main{flex-direction:column}aside{width:auto}#bot{max-height:none}}
+</style></head><body>
+<header>
+<h1><svg class="lgo" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M5 4h6a8 8 0 0 1 0 16H5z" fill="#2dd4bf22" stroke="#2dd4bf" stroke-width="2"/><path d="M1 8.5h4M1 15.5h4" stroke="#2dd4bf" stroke-width="2"/><circle cx="21.5" cy="12" r="2" fill="#fbbf24"/></svg><span>LogicLab</span><small>Virtual Digital Logic Trainer</small></h1>
+<button id="bHdr" class="tg" aria-expanded="true" title="Hide or show the toolbar buttons">▲ Hide toolbar</button><button id="bCmd" class="tg" title="Search every action (Ctrl+K)">⌘ Commands</button>
+<div class="grp" role="group" aria-label="File"><button id="bNew" title="Start an empty circuit">📄 New</button><button id="bSave" title="Save to this browser">💾 Save</button><button id="bLoad" title="Load the saved circuit">📂 Load</button><button id="bExp">Export JSON</button><button id="bImp">Import JSON</button><button id="bImg">Export PNG</button><button id="bSvg" title="Vector image of the board">Export SVG</button><button id="bShare" title="Copy a link that opens this circuit">🔗 Share link</button></div>
+<div class="grp" role="group" aria-label="Edit"><button id="bUndo" title="Ctrl+Z">Undo</button><button id="bRedo" title="Ctrl+Y">Redo</button><button id="bDel" title="Delete the selected wire (Del)">Delete wire</button><button id="bClr">Clear wires</button></div>
+<div class="grp" role="group" aria-label="Simulation"><button id="bPwr" aria-pressed="true">Power: ON</button><button id="bReset" title="Switches LOW, power ON">Reset</button><button id="bProbe" aria-pressed="false">Probe tool: OFF</button><button id="bStep" title="Advance to the next input combination">Step ▶</button><button id="bAuto" aria-pressed="false" title="Count through every input combination">Auto-count</button><button id="bSpd" title="Auto-count speed">Speed 1×</button><button id="bFlow" aria-pressed="true" title="Animate HIGH signals along wires">Signal flow</button><button id="bSnd" aria-pressed="false" title="Click sounds on the switches">Sound: OFF</button></div>
+<div class="grp" role="group" aria-label="View"><button id="bView" aria-pressed="false">Breadboard view</button><button id="bFs">Full screen</button><button id="bZo" title="Zoom out (Ctrl + scroll)" aria-label="Zoom out">−</button><button id="bZr" title="Reset zoom">100%</button><button id="bZi" title="Zoom in" aria-label="Zoom in">+</button><button id="bUi" aria-pressed="false" title="Switch between the dark and the light interface">Light theme</button><button id="bTh" title="Change board colour">Board colour</button><button id="bL">Toggle left</button><button id="bR">Toggle right</button><button id="bBot" aria-pressed="false" title="Hide or show the panel below the board; the board then fills the space">Toggle bottom</button></div>
+<div class="grp" role="group" aria-label="Analyze"><button id="bTrc" aria-pressed="true" title="Show how each LED signal is made, gate by gate">Signal trace</button><button id="bTim" title="Waveform of inputs and outputs">Timing diagram</button><button id="bSop" title="Boolean expression from the truth table">Boolean expression</button><button id="bCsv" title="Download the truth table">Truth table CSV</button></div>
+<div class="grp" role="group" aria-label="Learn"><button id="bQuiz" class="pri">🎓 Quiz mode</button><button id="bRep" title="Printable lab report">🧾 Lab report</button><button id="bTest">Self-test</button><button id="bHelp" title="Press ?">❓ Help</button></div>
+<input type="file" id="file" accept=".json" hidden>
+</header>
+<main>
+<aside id="left"><h3>Experiments</h3><div id="exl"></div></aside>
+<div id="mid"><div id="bw"><div id="fsbar"><button id="bFsx">Exit full screen</button><button data-act="pwr">Power</button><button data-act="view">Breadboard / Trainer</button><button data-act="probe">Probes</button></div><svg id="svg" viewBox="0 0 1000 540" style="min-width:980px;width:100%;max-width:1400px;display:block" role="application" aria-label="Digital logic trainer board"></svg></div>
+<div id="bot"><div id="exinfo"></div><div>
+<label>Expected output (e.g. <code>Y1 = (A AND B) OR C</code>; also XOR, NOT, NAND, NOR, XNOR, &amp; | ^ ~ +)
+<input id="expr" style="width:100%" placeholder="Y1 = A AND B"></label><button id="bExpr">Set expected</button> <button id="bExpC">Clear expected</button> <span id="exerr" class="bad"></span><div id="hint"></div>
+<h3>Truth table</h3><div id="tt"></div></div></div>
+<div id="st"></div></div>
+<aside id="right"><h3>IC sockets</h3><div id="soc"></div><div id="pinout"></div><div id="bbc"></div><h3>Quick wire</h3><label>From<select id="qwa"></select></label><label>To<select id="qwb"></select></label><button id="bQw">Add wire</button><h3>Wires <span id="wc"></span></h3><div id="wl"></div><h3>Signal monitor</h3><div class="lg"><i style="background:#22c55e"></i>HIGH<i style="background:#0f2a44;border:1px solid #6fa3bf"></i>LOW<i style="background:#f59e0b"></i>unknown<i style="background:#c8cfd6"></i>unwired</div><div id="mon"></div><details id="trd" open><summary>Signal trace</summary><div id="trc"></div></details><h3>Warnings</h3><div id="warn"></div><h3>Dashboard</h3><div id="dash"></div></aside>
+</main>
+<div id="quiz" role="dialog" aria-modal="true" aria-label="Quiz mode" hidden></div>
+<div id="rep" role="dialog" aria-modal="true" aria-label="Lab report" hidden><div class="rbar"><button id="rPrint" class="pri">Print / Save as PDF</button><button id="rDl">Download HTML</button><button id="rClose">Close</button></div><div id="rbody"></div></div>
+<dialog id="dlg" aria-labelledby="dt"><div class="dh"><h3 id="dt"></h3><button id="dx" type="button" aria-label="Close dialog" title="Close (Esc)">✕</button></div><div id="db"></div><div class="df"><button id="dc" type="button" class="pri">Close</button></div></dialog>
+<script>
+/* ================= SIMULATION ENGINE (no DOM access) ================= */
+const N='X';
+const GT={and:(a,b)=>a===0||b===0?0:a===1&&b===1?1:N,or:(a,b)=>a===1||b===1?1:a===0&&b===0?0:N,xor:(a,b)=>a===N||b===N?N:a^b,not:a=>a===N?N:1-a};
+GT.nand=(a,b)=>GT.not(GT.and(a,b));GT.nor=(a,b)=>GT.not(GT.or(a,b));GT.xnor=(a,b)=>GT.not(GT.xor(a,b));
+const Q=[[1,2,3],[4,5,6],[9,10,8],[12,13,11]]; // [inA,inB,out] per gate, from the datasheet
+const ICS={7400:{fn:'nand',g:Q,d:'Quad 2-input NAND'},7402:{fn:'nor',g:[[2,3,1],[5,6,4],[8,9,10],[11,12,13]],d:'Quad 2-input NOR'},
+7404:{fn:'not',g:[[1,2],[3,4],[5,6],[9,8],[11,10],[13,12]],d:'Hex inverter'},7408:{fn:'and',g:Q,d:'Quad 2-input AND'},
+7432:{fn:'or',g:Q,d:'Quad 2-input OR'},7486:{fn:'xor',g:Q,d:'Quad 2-input XOR'}};
+const SW_=['A','B','C','D'],LEDS=['Y1','Y2','Y3','Y4'];
+const PINS=[1,2,3,4].flatMap(n=>['P5.'+n,'G.'+n]).concat(SW_.map(k=>'SW.'+k),LEDS.map(k=>'LED.'+k));
+for(let s=1;s<=3;s++)for(let p=1;p<=14;p++)PINS.push(`S${s}.${p}`);
+const HOLES=[];for(let c=1;c<=30;c++)for(const r of'abcdefghij')HOLES.push(`H.${c}${r}`);
+for(let r=1;r<=4;r++)for(let n=1;n<=25;n++)HOLES.push(`R${r}.${n}`);
+const ALL=new Set([...PINS,...HOLES]);
+function netFinder(wires,st){ // union-find: wired pins and all +5V / GND jacks share a node
+ const par={},f=x=>{if(par[x]===undefined)par[x]=x;return par[x]===x?x:(par[x]=f(par[x]))};
+ const u=(a,b)=>{par[f(a)]=f(b)};wires.forEach(w=>u(w[0],w[1]));
+ for(let n=2;n<=4;n++){u('P5.1','P5.'+n);u('G.1','G.'+n)}
+ if(st&&st.bb){ // breadboard: a-e and f-j of each column are joined; each rail row is one line
+  for(let c=1;c<=30;c++)for(const[r0,rs]of[['a','bcde'],['f','ghij']])for(const r of rs)u(`H.${c}${r0}`,`H.${c}${r}`);
+  for(let r=1;r<=4;r++)for(let n=2;n<=25;n++)u(`R${r}.1`,`R${r}.${n}`);
+  st.ics.forEach((t,i)=>{if(t&&st.pos)for(let p=1;p<=14;p++)u(`S${i+1}.${p}`,p<=7?`H.${st.pos[i]+p-1}f`:`H.${st.pos[i]+14-p}e`)})}
+ return f}
+function simulate(st,sw,pwr=true){
+ const f=netFinder(st.wires,st),gates=[];
+ st.ics.forEach((t,i)=>{if(t)ICS[t].g.forEach(g=>gates.push({s:i+1,fn:ICS[t].fn,g}))});
+ const build=out=>{const nets={};
+  const add=(p,v)=>{const r=f(p),n=nets[r]||(nets[r]={v:undefined,c:false});if(n.v===undefined)n.v=v;else if(n.v!==v){if(n.v!==N&&v!==N)n.c=true;n.v=N}};
+  SW_.forEach(k=>add('SW.'+k,sw[k]));add('P5.1',pwr?1:0);add('G.1',0);for(const p in out)add(p,out[p]);
+  return{nets,nv:p=>{const n=nets[f(p)];return!n||n.c?N:n.v},fl:p=>!nets[f(p)]}};
+ const b0=build({});
+ const powered=st.ics.map((t,i)=>!!t&&b0.nv(`S${i+1}.14`)===1&&b0.nv(`S${i+1}.7`)===0);
+ let out={};gates.forEach(({s,g})=>out[`S${s}.${g[g.length-1]}`]=powered[s-1]?0:N);
+ let b,ok=false,osc=false;
+ for(let it=0;it<60&&!ok;it++){b=build(out);const no={};
+  gates.forEach(({s,fn,g})=>{const a=b.nv(`S${s}.${g[0]}`),r=g.length===3?GT[fn](a,b.nv(`S${s}.${g[1]}`)):GT.not(a);no[`S${s}.${g[g.length-1]}`]=powered[s-1]?r:N});
+  ok=JSON.stringify(no)===JSON.stringify(out);out=no}
+ if(!ok){osc=true;for(const p in out)out[p]=N;b=build(out)}
+ const W=new Set(),wn=new Set(st.wires.map(w=>f(w[0]))),wired={has:p=>wn.has(f(p))};
+ for(const r in b.nets)if(b.nets[r].c)W.add('Conflict: two outputs drive one net at different levels (shown as X).');
+ if(st.bb&&st.pos){const q=st.ics.map((t,i)=>t?st.pos[i]:-99).filter(x=>x>0).sort((a,b)=>a-b);if(q.some((x,i)=>i&&x-q[i-1]<7))W.add('ICs overlap on the breadboard: move one to another start column.')}
+ if(osc)W.add('Oscillation: feedback loop never settles. Outputs shown as X.');
+ st.ics.forEach((t,i)=>{if(t&&!powered[i]&&PINS.some(p=>p.startsWith('S'+(i+1)+'.')&&wired.has(p)))W.add(`IC${i+1} (${t}) has no power: wire +5V to pin 14 and GND to pin 7.`)});
+ gates.forEach(({s,g})=>{if(wired.has(`S${s}.${g[g.length-1]}`))g.slice(0,-1).forEach(p=>{if(b.fl(`S${s}.${p}`))W.add(`IC${s} pin ${p} is a floating input (X).`)})});
+ LEDS.forEach(y=>{if(wired.has('LED.'+y)&&b.fl('LED.'+y))W.add(`LED ${y} input is floating (X).`)});
+ return{nv:b.nv,f,W:[...W],osc,wired}}
+function canConnect(st,a,c){
+ if(a===c)return'Pick a different pin.';
+ if(st.wires.some(w=>(w[0]===a&&w[1]===c)||(w[0]===c&&w[1]===a)))return'These pins are already wired.';
+ const f=netFinder([...st.wires,[a,c]],st),d=[['P5.1','+5V rail'],['G.1','GND rail']];
+ SW_.forEach(k=>d.push(['SW.'+k,'Switch '+k]));
+ st.ics.forEach((t,i)=>t&&ICS[t].g.forEach(g=>d.push([`S${i+1}.${g[g.length-1]}`,`IC${i+1} pin ${g[g.length-1]} output`])));
+ const G={};d.forEach(([p,l])=>(G[f(p)]=G[f(p)]||new Set()).add(l));
+ for(const r in G)if(G[r].size>1)return'Output conflict: '+[...G[r]].join(' and ')+' would be shorted together.';
+ return''}
+function parse(src){ // safe recursive-descent Boolean parser (no eval)
+ const t=src.toUpperCase().replace(/([()~!&|^+*])/g,' $1 ').split(/\s+/).filter(Boolean);let i=0;
+ const prim=()=>{const x=t[i++];if(x==='('){const e=or();if(t[i++]!==')')throw Error('Missing )');return e}
+  if(x==='NOT'||x==='~'||x==='!')return{o:'not',a:prim()};if(/^[A-D01]$/.test(x))return{v:x};throw Error('Unexpected '+(x?'"'+x+'"':'end of expression'))};
+ const lvl=(ops,next)=>()=>{let l=next();while(ops[t[i]]){const o=ops[t[i++]];l={o,a:l,b:next()}}return l};
+ const and=lvl({AND:'and','&':'and','*':'and',NAND:'nand'},prim),xor=lvl({XOR:'xor','^':'xor',XNOR:'xnor'},and),or=lvl({OR:'or','|':'or','+':'or',NOR:'nor'},xor);
+ const e=or();if(i<t.length)throw Error('Unexpected "'+t[i]+'"');return e}
+const ev=(n,e)=>n.v?(n.v==='0'||n.v==='1'?+n.v:e[n.v]):n.o==='not'?1-ev(n.a,e):GT[n.o](ev(n.a,e),ev(n.b,e));
+const cnt=(n,m={})=>{if(n.o){m[n.o]=(m[n.o]||0)+1;cnt(n.a,m);n.b&&cnt(n.b,m)}return m};
+const IC_OF={and:7408,or:7432,not:7404,nand:7400,nor:7402,xor:7486,xnor:'7486+7404'};
+/* ================= EXPERIMENTS ================= */
+const pw=n=>[['P5.'+n,`S${n}.14`],['G.'+n,`S${n}.7`]];
+const g2=(ic,e,name,aim,th,v)=>({n:name,aim,th,v,ics:[ic],e:{Y1:e},w:[...pw(1),['SW.A','S1.1'],['SW.B','S1.2'],['S1.3','LED.Y1']]});
+const un=(ic,n,aim,th,v,e,hint,w)=>({n,aim,th,v,ics:[ic],e:{Y1:e},hint,w:[...pw(1),...w]}); // universal-gate experiments
+const TH={blue:{bg:'#17506f',bg2:'#0a2535',tx:'#fde68a'},green:{bg:'#13603c',bg2:'#082a1a',tx:'#fef08a'},dark:{bg:'#1a232e',bg2:'#06090d',tx:'#5eead4'}};let th=(()=>{try{return localStorage.getItem('ll.th')}catch(e){return null}})();th=TH[th]?th:'blue';
+const toast=t=>{let e=document.getElementById('tst');if(!e){e=document.createElement('div');e.id='tst';document.body.appendChild(e)}e.textContent=t;e.className='on';clearTimeout(e._t);e._t=setTimeout(()=>e.className='',2200)};
+let acT=null,trc=new Set(),flow=true,acMs=900,snd=false,AC=null,z=1;
+const EXPS=[
+ g2(7408,'A AND B','AND gate (7408)','Verify the truth table of the AND gate using IC 7408.','Output is HIGH only when both inputs are HIGH. Y = A·B.','Why does one LOW input force an AND output LOW?'),
+ g2(7432,'A OR B','OR gate (7432)','Verify the truth table of the OR gate using IC 7432.','Output is HIGH when at least one input is HIGH. Y = A+B.','Which input combination makes an OR gate output LOW?'),
+ {n:'NOT gate (7404)',aim:'Verify the NOT gate using IC 7404.',th:'The inverter output is the complement of its input.',v:'What happens if a TTL input is left floating?',ics:[7404],e:{Y1:'NOT A'},w:[...pw(1),['SW.A','S1.1'],['S1.2','LED.Y1']]},
+ g2(7400,'A NAND B','NAND gate (7400)','Verify the NAND gate using IC 7400.','NAND is AND followed by NOT. It is a universal gate.','Why is NAND called a universal gate?'),
+ {...g2(7402,'A NOR B','NOR gate (7402)','Verify the NOR gate using IC 7402.','NOR is OR followed by NOT. Note the different pinout: output is pin 1, inputs are pins 2 and 3.','Compare the 7402 pinout with the 7400.'),w:[...pw(1),['SW.A','S1.2'],['SW.B','S1.3'],['S1.1','LED.Y1']]},
+ g2(7486,'A XOR B','XOR gate (7486)','Verify the XOR gate using IC 7486.','Output is HIGH when the inputs differ. Y = A⊕B.','Where is XOR used in adders?'),
+ {n:'XNOR gate (7486+7404)',aim:'Build XNOR from an XOR gate and an inverter.',th:'XNOR = NOT(A XOR B). It is HIGH when inputs are equal.',v:'Where is XNOR used as an equality comparator?',ics:[7486,7404],e:{Y1:'A XNOR B'},w:[...pw(1),...pw(2),['SW.A','S1.1'],['SW.B','S1.2'],['S1.3','S2.1'],['S2.2','LED.Y1']]},
+ {n:'Half adder (7486+7408)',aim:'Build a half adder: Sum = A XOR B, Carry = A AND B.',th:'The half adder adds two bits. Y1 shows Sum and Y2 shows Carry.',v:'Why can a half adder not add a carry-in?',ics:[7486,7408],e:{Y1:'A XOR B',Y2:'A AND B'},w:[...pw(1),...pw(2),['SW.A','S1.1'],['SW.B','S1.2'],['S1.3','LED.Y1'],['SW.A','S2.1'],['SW.B','S2.2'],['S2.3','LED.Y2']]},
+ {n:'Full adder (7486+7408+7432)',aim:'Build a full adder: Sum = A XOR B XOR Cin and Cout = AB + Cin(A XOR B). Switch C is the carry-in.',th:'A full adder adds three bits: A, B and the carry-in Cin. It is two half adders joined by an OR gate. The first half adder (7486 gate 1 and 7408 gate 1) adds A and B. The second (7486 gate 2 and 7408 gate 2) adds that sum to Cin. The 7432 ORs the two carries. Y1 shows Sum and Y2 shows Cout.',v:'Why can full adders be chained to add multi-bit numbers, while half adders cannot?',ics:[7486,7408,7432],e:{Y1:'A XOR B XOR C',Y2:'(A AND B) OR ((A XOR B) AND C)'},hint:'Full adder needs 2× XOR (7486), 2× AND (7408) and 1× OR (7432).',w:[...pw(1),...pw(2),...pw(3),['SW.A','S1.1'],['SW.B','S1.2'],['S1.3','S1.4'],['SW.C','S1.5'],['S1.6','LED.Y1'],['SW.A','S2.1'],['SW.B','S2.2'],['S1.3','S2.4'],['SW.C','S2.5'],['S2.3','S3.1'],['S2.6','S3.2'],['S3.3','LED.Y2']]},
+ un(7400,'NOT from NAND (7400)','Build a NOT gate using one NAND gate with both inputs tied together.','NAND(A,A) = NOT(A·A) = NOT A. A NAND gate with its inputs joined acts as an inverter, which is the first step in showing that NAND is universal.','What else could you do with the second NAND input to get a NOT gate?','NOT A',
+  'Uses 1 NAND gate (both inputs on switch A).',[['SW.A','S1.1'],['SW.A','S1.2'],['S1.3','LED.Y1']]),
+ un(7400,'AND from NAND only (7400)','Build an AND gate using only NAND gates.','AND = NOT(NAND). The first NAND gives NOT(A·B). A second NAND with its inputs tied together inverts it, giving A·B.','How many NAND gates does an AND gate need?','A AND B',
+  'Uses only NAND: 2 of the 4 gates in the 7400.',[['SW.A','S1.1'],['SW.B','S1.2'],['S1.3','S1.4'],['S1.3','S1.5'],['S1.6','LED.Y1']]),
+ un(7400,'OR from NAND only (7400)','Build an OR gate using only NAND gates.','By De Morgan, A + B = NOT(NOT A · NOT B) = NAND(NOT A, NOT B). Two NAND gates act as inverters and a third NAND combines them.','Which De Morgan law makes this circuit work?','A OR B',
+  'Uses only NAND: 3 of the 4 gates in the 7400.',[['SW.A','S1.1'],['SW.A','S1.2'],['SW.B','S1.4'],['SW.B','S1.5'],['S1.3','S1.9'],['S1.6','S1.10'],['S1.8','LED.Y1']]),
+ un(7400,'XOR from NAND only (7400)','Build an XOR gate using four NAND gates (one 7400).','N1 = NAND(A,B). N2 = NAND(A,N1). N3 = NAND(B,N1). Y = NAND(N2,N3) = A⊕B. The shared node N1 is reused by two gates, which is why only four are needed.','Why is the NAND-only XOR cheaper than building it from AND, OR and NOT?','A XOR B',
+  'Uses only NAND: all 4 gates in the 7400. N1 = pin 3 feeds pins 5 and 10.',[['SW.A','S1.1'],['SW.B','S1.2'],['SW.A','S1.4'],['S1.3','S1.5'],['SW.B','S1.9'],['S1.3','S1.10'],['S1.6','S1.12'],['S1.8','S1.13'],['S1.11','LED.Y1']]),
+ un(7402,'NOT from NOR (7402)','Build a NOT gate using one NOR gate with both inputs tied together.','NOR(A,A) = NOT(A+A) = NOT A. Like NAND, NOR is a universal gate. Remember the 7402 pinout: output is pin 1, inputs are pins 2 and 3.','Compare the 7402 pinout with the 7400. What is different?','NOT A',
+  'Uses 1 NOR gate (both inputs on switch A).',[['SW.A','S1.2'],['SW.A','S1.3'],['S1.1','LED.Y1']]),
+ un(7402,'OR from NOR only (7402)','Build an OR gate using only NOR gates.','OR = NOT(NOR). The first NOR gives NOT(A+B). A second NOR with its inputs tied together inverts it, giving A+B.','How many NOR gates does an OR gate need?','A OR B',
+  'Uses only NOR: 2 of the 4 gates in the 7402.',[['SW.A','S1.2'],['SW.B','S1.3'],['S1.1','S1.5'],['S1.1','S1.6'],['S1.4','LED.Y1']]),
+ un(7402,'AND from NOR only (7402)','Build an AND gate using only NOR gates.','By De Morgan, A·B = NOT(NOT A + NOT B) = NOR(NOT A, NOT B). Two NOR gates act as inverters and a third NOR combines them.','Which De Morgan law makes this circuit work?','A AND B',
+  'Uses only NOR: 3 of the 4 gates in the 7402.',[['SW.A','S1.2'],['SW.A','S1.3'],['SW.B','S1.5'],['SW.B','S1.6'],['S1.1','S1.8'],['S1.4','S1.9'],['S1.10','LED.Y1']]),
+ un(7402,'NAND from NOR only (7402)','Build a NAND gate using only NOR gates.','NAND = NOT(A.B). By De Morgan, A.B = NOR(NOT A, NOT B). Gates 1 and 2 invert A and B (inputs tied together). Gate 3 gives A.B. Gate 4 inverts it, so the output is NAND.','How many NOR gates does a NAND gate need, and what does each one do?','A NAND B',
+  'Uses only NOR: all 4 gates in the 7402. Gates 1 and 2 are inverters, gate 3 gives AND, gate 4 inverts it.',[['SW.A','S1.2'],['SW.A','S1.3'],['SW.B','S1.5'],['SW.B','S1.6'],['S1.1','S1.8'],['S1.4','S1.9'],['S1.10','S1.11'],['S1.10','S1.12'],['S1.13','LED.Y1']]),
+ un(7400,'NOR from NAND only (7400)','Build a NOR gate using only NAND gates.','NOR = NOT(A+B). By De Morgan, A+B = NAND(NOT A, NOT B). Gates 1 and 2 invert A and B, gate 3 gives A+B, and gate 4 inverts it, so the output is NOR.','How many NAND gates does a NOR gate need, and what does each one do?','A NOR B',
+  'Uses only NAND: all 4 gates in the 7400. Gates 1 and 2 are inverters, gate 3 gives OR, gate 4 inverts it.',[['SW.A','S1.1'],['SW.A','S1.2'],['SW.B','S1.4'],['SW.B','S1.5'],['S1.3','S1.9'],['S1.6','S1.10'],['S1.8','S1.12'],['S1.8','S1.13'],['S1.11','LED.Y1']]),
+ un(7402,'XNOR from NOR only (7402)','Build an XNOR gate using four NOR gates (one 7402).','N1 = NOR(A,B). N2 = NOR(A,N1) = (NOT A) AND B. N3 = NOR(B,N1) = A AND (NOT B). Y = NOR(N2,N3) = A XNOR B. All four gates of one 7402 are used.','Which two gates detect "only A is HIGH" and "only B is HIGH"?','A XNOR B',
+  'Uses only NOR: all 4 gates in the 7402. N1 = pin 1 feeds pins 6 and 9.',[['SW.A','S1.2'],['SW.B','S1.3'],['SW.A','S1.5'],['S1.1','S1.6'],['SW.B','S1.8'],['S1.1','S1.9'],['S1.4','S1.11'],['S1.10','S1.12'],['S1.13','LED.Y1']]),
+ {n:'XOR from NOR only (7402 + 7402)',aim:'Build an XOR gate using only NOR gates (two 7402 chips).',th:'XOR = NOT(XNOR). IC1 builds XNOR exactly as in the previous experiment (four NOR gates). Gate 1 of IC2, with its inputs tied together, inverts the result to give XOR. XOR needs five NOR gates, so one 7402 is not enough.',v:'Why does XOR need five NOR gates when XNOR needs only four?',ics:[7402,7402],e:{Y1:'A XOR B'},hint:'Uses only NOR: 5 gates, so two 7402 chips. IC1 pin 13 feeds IC2 pins 2 and 3.',w:[...pw(1),...pw(2),['SW.A','S1.2'],['SW.B','S1.3'],['SW.A','S1.5'],['S1.1','S1.6'],['SW.B','S1.8'],['S1.1','S1.9'],['S1.4','S1.11'],['S1.10','S1.12'],['S1.13','S2.2'],['S1.13','S2.3'],['S2.1','LED.Y1']]},
+ {n:'XNOR from NAND only (7400 + 7400)',aim:'Build an XNOR gate using only NAND gates (two 7400 chips).',th:'XNOR = NOT(XOR). IC1 builds XOR from four NAND gates. Gate 1 of IC2, with its inputs tied together, inverts it to give XNOR. XNOR needs five NAND gates, so one 7400 is not enough.',v:'Why does XNOR need one more NAND gate than XOR?',ics:[7400,7400],e:{Y1:'A XNOR B'},hint:'Uses only NAND: 5 gates, so two 7400 chips. IC1 pin 11 (XOR) feeds IC2 pins 1 and 2.',w:[...pw(1),...pw(2),['SW.A','S1.1'],['SW.B','S1.2'],['SW.A','S1.4'],['S1.3','S1.5'],['SW.B','S1.9'],['S1.3','S1.10'],['S1.6','S1.12'],['S1.8','S1.13'],['S1.11','S2.1'],['S1.11','S2.2'],['S2.3','LED.Y1']]}];
+EXPS.forEach((x,i)=>x.g=i<7?'Basic gates':i<9?'Adders':'Universal gates');
+const pretty=p=>{const[k,n]=p.split('.');return k==='P5'?'+5V jack '+n:k==='G'?'GND jack '+n:k==='SW'?'Switch '+n:k==='LED'?'LED '+n:k==='H'?'Hole '+n:/^R\d$/.test(k)?['Top + rail','Top − rail','Bottom + rail','Bottom − rail'][k[1]-1]+' '+n:`IC${k[1]} pin ${n}`};
+const tip=p=>/^H\./.test(p)?`${pretty(p)}: joined with the other holes in column ${parseInt(p.slice(2))} (${'abcde'.includes(p.slice(-1))?'a–e':'f–j'})`:pretty(p);
+/* ================= UI ================= */
+const $=s=>document.querySelector(s),svg=$('#svg'),bw=$('#bw'),clone=o=>JSON.parse(JSON.stringify(o)),COL=['#3b82f6','#22c55e','#facc15','#e879f9'];
+let probeMode=false,drag=null,skip=false,st,sw={A:0,B:0,C:0,D:0},exp={},cur=-1,pwr=true,pend=null,selW=-1,selS=0,hist=[],hi=-1,vis=new Set(),acc=new Set(),sim,fk=null;
+const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+let stats=(()=>{const d={ok:0,n:0,built:0,done:[],fd:[]};try{const x=JSON.parse(LS.get('ll.stats'));return x&&Array.isArray(x.done)?{...d,...x}:d}catch(e){return d}})();
+const saveStats=()=>LS.set('ll.stats',JSON.stringify(stats));
+let mt;const msg=t=>{const s=$('#st');s.dataset.m=t;clearTimeout(mt);if(t)mt=setTimeout(()=>{s.dataset.m='';const m=s.querySelector('.msg');m&&(m.textContent='')},6000)};
+const bld=x=>({ics:[...x.ics.map(String),null,null].slice(0,3).map(t=>t||null),wires:x.w.map((w,i)=>[w[0],w[1],i%4])});
+function snap(){hist=hist.slice(0,hi+1);hist.push(clone(st));if(hist.length>100)hist.shift();hi=hist.length-1}
+function changed(){snap();vis.clear();render()}
+function load(c,e={},i=-1,built=false){if(acT)$('#bAuto').click();st=clone(c);st.ics=st.ics.map(t=>t==null?null:String(t));acc.clear();st.bb=!!st.bb;st.pos=st.pos||[2,12,22];st.probes=st.probes||[];exp=clone(e);cur=i;flt=-1;pend=null;selW=-1;hist=[];hi=-1;snap();vis.clear();if(built){stats.built++;saveStats()}render()}
+const tog=k=>{sw[k]^=1;try{beep(sw[k]?880:440)}catch(e){};fk=k;render()};
+function link(a,b){const e=canConnect(st,a,b);pend=null;if(e){msg('⚠ '+e);render();return}st.wires.push([a,b,st.wires.length%4]);msg('Wire added.');changed()}
+function pinClick(p){
+ if(probeMode){const i=st.probes.indexOf(p);i>=0?st.probes.splice(i,1):st.probes.push(p);msg(i>=0?'Probe removed.':'Probe attached to '+pretty(p)+'.');changed();return}
+ if(!pend){pend=p;selW=-1;msg('Selected '+pretty(p)+'. Click a second pin to wire it (Esc cancels).')}
+ else if(pend===p){pend=null;msg('')}
+ else{link(pend,p);return}
+ render()}
+function delW(){if(selW>=0){st.wires.splice(selW,1);selW=-1;changed()}else msg('Click a wire first to select it.'),render()}
+const RY={a:184,b:198,c:212,d:226,e:240,f:290,g:304,h:318,i:332,j:346},holeOf=(s,p)=>p<=7?`H.${st.pos[s-1]+p-1}f`:`H.${st.pos[s-1]+14-p}e`;
+const xy=p=>{const[k,n]=p.split('.');
+ if(k==='P5')return[40+(n-1)*40,50];if(k==='G')return[40+(n-1)*40,90];
+ if(k==='SW')return[330+'ABCD'.indexOf(n)*100,118];if(k==='LED')return[330+(n[1]-1)*100,st.bb?416:395];
+ if(k==='H')return[60+(parseInt(n)-1)*31,RY[n.slice(-1)]];if(/^R\d$/.test(k))return[60+(n-1)*36,[152,166,366,380][k[1]-1]];if(st.bb)return xy(holeOf(+k[1],+n));
+ const x0=20+(k[1]-1)*325;return+n<=7?[x0+30+(n-1)*42,305]:[x0+30+(14-n)*42,195]};
+const dir=p=>{const[k,n]=p.split('.');if(k==='H')return'abcde'.includes(n.slice(-1))?-1:1;if(/^R\d$/.test(k))return k[1]<3?-1:1;return k[0]==='S'&&k!=='SW'?(+n<=7?1:-1):k==='LED'?-1:1};
+function bbBack(){
+ let s=`<rect x="30" y="142" width="940" height="250" rx="6" fill="#e5e1d3" stroke="#b9b39c"/><rect x="40" y="247" width="920" height="36" fill="#d2ccb6"/>`;
+ [1,2,3,4].forEach(r=>{const y=xy('R'+r+'.1')[1];s+=`<line x1="52" y1="${y}" x2="950" y2="${y}" stroke="${r%2?'#ef4444':'#3b82f6'}" stroke-opacity=".6" stroke-width="2"/><text x="38" y="${y+4}" class="bbn" style="font-size:12px">${r%2?'+':'−'}</text>`});
+ for(let c=1;c<=30;c++){const x=xy('H.'+c+'a')[0];s+=`<text x="${x}" y="176" class="bbn" text-anchor="middle">${c}</text><line x1="${x}" y1="184" x2="${x}" y2="240" stroke="#b9b39c"/><line x1="${x}" y1="290" x2="${x}" y2="346" stroke="#b9b39c"/>`}
+ st.ics.forEach((t,i)=>{if(!t)return;const c0=st.pos[i],x1=xy(`H.${c0}f`)[0]-12,x2=xy(`H.${c0+6}f`)[0]+12,on=selS===i;
+  s+=`<rect data-soc="${i}" x="${x1}" y="250" width="${x2-x1}" height="30" rx="3" fill="#111" stroke="${on?'#35c2b0':'#444'}" stroke-width="${on?3:1}"/><path d="M${x1} 259a6 6 0 0 1 0 12" fill="#333"/><text x="${(x1+x2)/2}" y="268" font-size="10" text-anchor="middle">IC${i+1} ${t}</text>`;
+  for(let p=1;p<=14;p++)s+=`<text x="${xy(`S${i+1}.${p}`)[0]}" y="${p<=7?277:259}" font-size="8" text-anchor="middle">${p}</text>`});
+ return s}
+function board(){
+ const v=p=>sim.nv(p),ly=st.bb?416:395;let s=`<defs><radialGradient id="pcb" cx=".5" cy=".25" r=".95"><stop offset="0" stop-color="${TH[th].bg}"/><stop offset="1" stop-color="${TH[th].bg2}"/></radialGradient><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#ffffff" stroke-opacity=".05"/></pattern></defs><style>.pin{cursor:pointer;touch-action:none}.bbn{fill:#666;font-size:8px}.pin:hover{stroke:#22d3ee}path[data-wire]:hover{stroke:#ffffff44}rect[data-soc]{filter:drop-shadow(0 3px 5px #0009)}[data-sw]:hover>rect:first-child{stroke:#fff}.pin[fill="#22c55e"]{filter:drop-shadow(0 0 5px #22c55e)}.flow{fill:none;stroke:#fff;stroke-opacity:.85;stroke-width:2;stroke-linecap:round;stroke-dasharray:1 14;animation:fl .8s linear infinite;pointer-events:none}@keyframes fl{to{stroke-dashoffset:-15}}@media(prefers-reduced-motion:reduce){.flow{animation:none}}text{font-family:system-ui,sans-serif;fill:#d8ecf5}</style>
+<rect width="1000" height="540" rx="8" fill="url(#pcb)" stroke="#9aa7b2" stroke-width="6"/><rect width="1000" height="540" rx="8" fill="url(#grid)"/><g fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="3" stroke-linecap="round"><path d="M730 82h80l16 16h150M730 112h210M730 430h90l20 20h130M730 480h150l20-20h90"/><circle cx="978" cy="98" r="4"/><circle cx="940" cy="112" r="4"/><circle cx="970" cy="450" r="4"/><circle cx="978" cy="460" r="4"/></g><text x="980" y="34" text-anchor="end" font-size="14" font-style="italic" style="fill:${TH[th].tx};font-family:'Segoe Script','Lucida Handwriting','Brush Script MT','Snell Roundhand','Apple Chancery',cursive;letter-spacing:.4px" filter="drop-shadow(0 0 4px ${TH[th].tx}66)">Made With ❤️ By Hareram</text><path d="M820 45Q900 40 980 45" fill="none" stroke="${TH[th].tx}" stroke-opacity=".45" stroke-width="1.2"/><text x="980" y="522" text-anchor="end" font-size="9" letter-spacing="2" style="fill:#fff;fill-opacity:.28">LOGICLAB · DIGITAL LOGIC TRAINER</text>`;
+ [[14,14],[986,14],[14,526],[986,526]].forEach(([x,y])=>s+=`<circle cx="${x}" cy="${y}" r="5" fill="#9aa7b2"/><path d="M${x-3} ${y}h6" stroke="#456"/>`);
+ const sec=(x,y,w,h,t)=>s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="none" stroke="#7dd3fc" stroke-opacity=".5" stroke-width="1.3" stroke-dasharray="5 4"/><text x="${x+8}" y="${y+14}" font-size="11" font-weight="700" letter-spacing="1.3" style="fill:#7dd3fc">${t}</text>`;
+ sec(15,20,225,100,'POWER SUPPLY');sec(290,20,420,118,'INPUT LOGIC SWITCHES');if(!st.bb)sec(15,175,975,150,'DIGITAL IC SOCKETS');sec(290,st.bb?396:340,420,st.bb?138:185,'OUTPUT INDICATORS (LEDs)');
+ s+=`<text x="180" y="54" font-size="12" fill="#f87171">+5V</text><text x="180" y="94" font-size="12">GND</text><circle cx="205" cy="34" r="5" fill="${pwr?'#ef4444':'#4a1d1d'}"/><text x="215" y="38" font-size="10">PWR</text>`;
+ SW_.forEach((k,i)=>{const x=330+i*100,on=sw[k];
+  s+=`<g data-sw="${k}" tabindex="0" role="switch" aria-checked="${!!on}" aria-label="Switch ${k}: ${on?'HIGH':'LOW'}" style="cursor:pointer"><rect x="${x-22}" y="52" width="44" height="52" rx="4" fill="#26323d" stroke="#aab"/><rect x="${x-10}" y="${on?56:78}" width="20" height="22" rx="3" fill="${on?'#f1f5f9':'#94a3b8'}"/><text x="${x}" y="46" font-size="14" text-anchor="middle" font-weight="700">${k}</text><circle cx="${x+30}" cy="62" r="5" fill="${on?'#22c55e':'#334'}"/><text x="${x+36}" y="98" font-size="10">${on?'1':'0'}</text></g><line x1="${x}" y1="104" x2="${x}" y2="118" stroke="#aab" stroke-width="2"/>`});
+ LEDS.forEach((y,i)=>{const x=330+i*100,val=v('LED.'+y),w=sim.wired.has('LED.'+y),hue=i<2?['#ef4444','#4a1d1d']:['#22c55e','#12341f'];
+  s+=`<line x1="${x}" y1="${ly}" x2="${x}" y2="${ly+30}" stroke="#aab" stroke-width="2"/><circle cx="${x}" cy="${ly+55}" r="20" fill="${!w||val===N?'#6b7280':val?hue[0]:hue[1]}" stroke="#cbd5e1" stroke-width="3"${val===1&&w?` filter="drop-shadow(0 0 18px ${hue[0]})"`:''}/><text x="${x}" y="${ly+60}" text-anchor="middle" font-size="14" font-weight="700">${!w?'':val===N?'?':''}</text><text x="${x}" y="${ly+97}" text-anchor="middle" font-size="13" font-weight="700">${y}</text><text x="${x}" y="${ly+113}" text-anchor="middle" font-size="10">${!w?'unused':val===N?'unknown (X)':val?'HIGH':'LOW'}</text>`});
+ if(st.bb)s+=bbBack();
+ if(!st.bb)st.ics.forEach((t,i)=>{const x0=20+i*325,on=selS===i;
+  s+=`<rect data-soc="${i}" x="${x0+12}" y="212" width="288" height="76" rx="4" fill="${t?'#111':'#0a2535'}" stroke="${on?'#35c2b0':'#456'}" stroke-width="${on?3:1.5}"${t?'':' stroke-dasharray="5 4"'}/>`;
+  if(t){s+=`<path d="M${x0+12} 238a12 12 0 0 1 0 24" fill="#333"/><circle cx="${x0+17}" cy="273" r="3.5" fill="#fff" stroke="#9aa7b2" stroke-width="1"/><text x="${x0+156}" y="246" font-size="20" text-anchor="middle" font-weight="700">${t}</text><text x="${x0+156}" y="264" font-size="10" text-anchor="middle">${ICS[t].d}</text><text x="${x0+156}" y="204" font-size="10" text-anchor="middle" fill="#9cc">IC${i+1}</text><text x="${x0+30}" y="244" font-size="9" text-anchor="middle" fill="#fca5a5">VCC</text><text x="${x0+30+6*42}" y="270" font-size="9" text-anchor="middle" fill="#9ca3af">GND</text>`;
+   for(let p=1;p<=14;p++){const[px,py]=xy(`S${i+1}.${p}`);s+=`<text x="${px}" y="${p<=7?282:226}" font-size="10" text-anchor="middle">${p}</text>`}}
+  else s+=`<text x="${x0+156}" y="254" font-size="12" text-anchor="middle">Empty socket ${i+1}: choose an IC on the right</text>`});
+ st.wires.forEach((w,i)=>{if(!st.bb&&(/^(H|R\d)\./.test(w[0])||/^(H|R\d)\./.test(w[1])))return;const[x1,y1]=xy(w[0]),[x2,y2]=xy(w[1]),r=sim.f(w[0]);
+  const c=r===sim.f('P5.1')?'#ef4444':r===sim.f('G.1')?'#0a0a0a':COL[w[2]%4];
+  const d=`M${x1} ${y1}C${x1} ${y1+dir(w[0])*60} ${x2} ${y2+dir(w[1])*60} ${x2} ${y2}`;
+  s+=`<path d="${d}" fill="none" stroke="#fff" stroke-opacity="${selW===i?.9:.25}" stroke-width="7"/><path d="${d}" fill="none" stroke="${c}" stroke-width="3.5"/><path data-wire="${i}" d="${d}" fill="none" stroke="transparent" stroke-width="14" pointer-events="stroke" style="cursor:pointer"><title>${pretty(w[0])} to ${pretty(w[1])}</title></path>${flow&&v(w[0])===1?`<path class="flow" d="${d}"/>`:''}`});
+ if(st.bb)HOLES.forEach(h=>{const[x,y]=xy(h),wd=sim.wired.has(h),val=v(h),on=pend===h;s+=`<circle class="pin" data-pin="${h}" cx="${x}" cy="${y}" r="5" fill="${!wd?'#5b5646':val===1?'#22c55e':val===0?'#0f2a44':'#f59e0b'}" stroke="${on?'#22d3ee':'#2a2a2a'}" stroke-width="${on?3:1}"><title>${tip(h)}${wd?' = '+val:''}</title></circle>`});
+ PINS.filter(p=>!st.bb||!/^S\d/.test(p)||st.ics[p[1]-1]).forEach(p=>{const[x,y]=xy(p),wd=sim.wired.has(p),val=v(p),on=pend===p;
+  s+=`<circle class="pin" data-pin="${p}" cx="${x}" cy="${y}" r="${st.bb&&/^S\d/.test(p)?6:8}" fill="${!wd?'#c8cfd6':val===1?'#22c55e':val===0?'#0f2a44':'#f59e0b'}" stroke="${on?'#22d3ee':trc.has(p)?'#fbbf24':'#cbd5e1'}" stroke-width="${on?4:trc.has(p)?3.5:1.5}"><title>${pretty(p)}${wd?' = '+val:''}</title></circle>`});
+ st.probes.forEach(p=>{if(!st.bb&&/^(H|R\d)\./.test(p))return;const[x,y]=xy(p),val=v(p);s+=`<g data-probe="${p}" style="cursor:pointer"><line x1="${x}" y1="${y-8}" x2="${x}" y2="${y-20}" stroke="#fde047"/><rect x="${x-13}" y="${y-36}" width="26" height="16" rx="3" fill="${val===1?'#16a34a':val===0?'#1e293b':'#b45309'}" stroke="#fde047"/><text x="${x}" y="${y-24}" font-size="11" text-anchor="middle" style="fill:#fff">${val}</text><title>Probe on ${pretty(p)} (click to remove)</title></g>`});
+ return s}
+function table(){
+ const ins=SW_.filter(k=>st.wires.some(w=>w.includes('SW.'+k))),outs=LEDS.filter(y=>st.wires.some(w=>w.includes('LED.'+y)));
+ if(!ins.length||!outs.length){$('#tt').innerHTML='<p>Wire at least one switch and one LED to generate a truth table.</p>';return}
+ const A={};outs.forEach(y=>{if(exp[y])try{A[y]=parse(exp[y])}catch(e){}});
+ const cn=ins.map(k=>sw[k]).join(''),total=1<<ins.length;let allSeen=true,allOk=true,seenN=0,h='<table><tr>'+ins.map(k=>`<th>${k}</th>`).join('')+outs.map(y=>(A[y]?`<th>${y} expected</th>`:'')+`<th>${y} observed</th>`).join('')+'</tr>';
+ for(let r=0;r<total;r++){
+  const s2={A:0,B:0,C:0,D:0};ins.forEach((k,j)=>s2[k]=(r>>(ins.length-1-j))&1);
+  const key=ins.map(k=>s2[k]).join(''),live=key===cn,sm=simulate(st,s2,pwr);
+  if(live&&!vis.has(key)){vis.add(key);if(!acc.has(key)&&outs.some(y=>A[y])){acc.add(key);outs.forEach(y=>{if(A[y]){stats.n++;if(sm.nv('LED.'+y)===ev(A[y],s2))stats.ok++}});saveStats()}}
+  const seen=vis.has(key);if(seen)seenN++;else allSeen=false;
+  h+=`<tr class="${live?'live':''}" data-r="${ins.map(k=>k+'='+s2[k]).join(',')}" title="Click to set these inputs">`+ins.map(k=>`<td>${s2[k]}</td>`).join('')+outs.map(y=>{const o=sm.nv('LED.'+y),e=A[y]?ev(A[y],s2):null;
+   const good=A[y]&&o===e;if(A[y]&&seen&&!good)allOk=false;
+   return(A[y]?`<td>${e}</td>`:'')+`<td>${seen?o+(A[y]?(good?' <span class="ok">✓</span>':' <span class="bad">✗</span>'):''):'—'}</td>`}).join('')+'</tr>'}
+ h+='</table><p>'+seenN+' of '+total+' rows checked. Toggle the switches, or click a row, to fill in the table.</p>';
+ const full=outs.every(y=>A[y]);
+ if(full&&allSeen&&allOk&&!sim.W.length){h+='<p class="ok"><b>✔ Result: truth table verified. Observed output matches expected for every row.</b></p>'+(cur>=0&&cur+1<EXPS.length?`<button data-ex="${cur+1}">Next experiment →</button>`:'')+(flt>=0?'<button data-fl="next">Next fault →</button>':'');if(cur>=0&&!stats.done.includes(cur)){stats.done.push(cur);saveStats()}if(flt>=0&&!stats.fd.includes(flt)){stats.fd.push(flt);saveStats()}}
+ else if(full&&!allOk)h+='<p class="bad">Some rows do not match. Check your wiring, IC pin numbers, and power pins.</p>';
+ $('#tt').innerHTML=h}
+function side(){
+ $('#soc').innerHTML=[0,1,2].map(i=>`<label>Socket ${i+1}<select data-ic="${i}"><option value="">Empty</option>${Object.keys(ICS).map(t=>`<option${st.ics[i]===t?' selected':''}>${t}</option>`).join('')}</select></label>`).join('');
+ const t=st.ics[selS];$('#pinout').innerHTML=t?`<h3>IC${selS+1}: ${t} pinout</h3><div>${ICS[t].d}. Pin 14 = VCC, pin 7 = GND.</div>`+ICS[t].g.map((g,i)=>`<div>Gate ${i+1}: in ${g.slice(0,-1).join(', ')} &rarr; out ${g[g.length-1]}</div>`).join(''):'<p>Click an IC to see its pinout.</p>';
+ const hid=st.bb?0:st.wires.filter(w=>/^(H|R\d)\./.test(w[0])||/^(H|R\d)\./.test(w[1])).length;
+ $('#bbc').innerHTML=st.bb?`<h3>Breadboard</h3><p style="font-size:12px">Holes in one column on the same side of the centre gap (a–e, or f–j) are joined. Each rail row is one joined line and has no power until you wire a +5V or GND jack to it. Hover a hole for details. The IC sits across the gap.</p>`+[0,1,2].map(i=>st.ics[i]?`<label>IC${i+1} start column<select data-pos="${i}">${Array.from({length:24},(_,k)=>`<option${st.pos[i]===k+1?' selected':''}>${k+1}</option>`).join('')}</select></label>`:'').join(''):'';
+ $('#mon').innerHTML=`<div>Inputs: ${SW_.map(k=>k+'='+sw[k]).join(' ')}</div><div>Outputs: ${LEDS.filter(y=>sim.wired.has('LED.'+y)).map(y=>y+'='+sim.nv('LED.'+y)).join(' ')||'none wired'}</div>`+(st.probes.length?st.probes.map(p=>`<div>Probe ${pretty(p)}: <b>${sim.nv(p)}</b></div>`).join(''):'<div>No probes. Turn on the Probe tool and click any pin.</div>');
+ $('#warn').innerHTML=(hid?`<div class="w">ℹ ${hid} wire(s) use breadboard holes. Switch to Breadboard view to see them.</div>`:'')+(sim.W.length?sim.W.map(w=>`<div class="w">⚠ ${w}</div>`).join(''):'<div class="ok">No problems found.</div>');
+ const a=stats.n?Math.round(stats.ok/stats.n*100):0;
+ $('#dash').innerHTML=`<div>Practicals completed: ${stats.done.length} of ${EXPS.length}</div><div class="qbar" role="progressbar" aria-valuemin="0" aria-valuemax="${EXPS.length}" aria-valuenow="${stats.done.length}"><i style="width:${stats.done.length/EXPS.length*100}%"></i></div><div>Faults fixed: ${stats.fd.length} of ${FAULTS.length}</div><div>Current: ${cur>=0?EXPS[cur].n:'free circuit'}</div><div>Truth-table accuracy: ${a}% (${stats.ok}/${stats.n})</div><div>Circuits built: ${stats.built}</div><div>Topics: ${stats.done.map(i=>EXPS[i].n.split(' (')[0]).join(', ')||'none yet'}</div><div>Quiz: ${quizLine()}</div><p><button id="bRp">${rpc?'Click again to confirm':'Reset progress'}</button></p>`;
+ $('#exl').innerHTML=EXPS.map((x,i)=>(i===0||x.g!==EXPS[i-1].g?`<div class="eg">${x.g}</div>`:'')+`<button class="ex${i===cur?' on':''}" data-ex="${i}">${stats.done.includes(i)?'✔ ':''}${i+1}. ${x.n}</button>`).join('')+'<div class="eg">Fault finding</div>'+FAULTS.map((F,i)=>`<button class="ex${i===flt?' on':''}" data-fl="${i}">${stats.fd.includes(i)?'✔ ':''}${i+1}. ${F.n}</button>`).join('');
+ $('#wc').textContent='('+st.wires.length+')';$('#wl').innerHTML=st.wires.length?st.wires.map((w,i)=>`<div class="wl"><span>${pretty(w[0])} → ${pretty(w[1])}</span><button data-dw="${i}" aria-label="Delete wire ${pretty(w[0])} to ${pretty(w[1])}" title="Delete this wire">✕</button></div>`).join(''):'<p class="lg">No wires yet. Drag between pins, or use Quick wire.</p>';
+ const x=EXPS[cur];$('#exinfo').innerHTML=FAULTS[flt]?fhtml(FAULTS[flt]):x?`<h3>${x.n}</h3><p><b>Aim:</b> ${x.aim}</p><p><b>Components:</b> ${x.ics.map(i=>'IC '+i).join(', ')}, switches, LEDs, +5V and GND.</p><p><b>Theory:</b> ${x.th}</p><b>Connections (already wired):</b><ol>${x.w.map(w=>`<li>${pretty(w[0])} &rarr; ${pretty(w[1])}</li>`).join('')}</ol><b>Procedure:</b><ol><li>Check power wires on every IC.</li><li>Set all switches LOW.</li><li>Step through every input combination.</li><li>Compare observed with expected.</li></ol><p><b>Viva:</b> ${x.v}</p><button data-exb="${cur}" title="Keeps the ICs and power wires; you place the signal wires">Build it yourself</button>`:`<h3>Free circuit</h3><p>Click a pin, then another pin, to place a wire. Pick ICs on the right. Choose an experiment on the left for guided practice.</p>`;
+ const ex=Object.entries(exp).map(([y,s])=>{try{const c=cnt(parse(s));return`${y}: `+Object.entries(c).map(([o,n])=>n+'× '+o.toUpperCase()+' (IC '+IC_OF[o]+')').join(', ')}catch(e){return''}}).join(' | ');const xh=EXPS[cur]&&EXPS[cur].hint;$('#hint').textContent=xh||(ex?'Suggested gates: '+ex:'')}
+function render(){
+ const ae=document.activeElement,fsel=ae&&ae.id==='bRp'?'#bRp':ae&&ae.dataset?['ex','ic','pos','dw'].map(k=>ae.dataset[k]!==undefined?`[data-${k}="${ae.dataset[k]}"]`:'').find(Boolean)||'':'';
+ qwFill();sim=simulate(st,sw,pwr);trace();svg.innerHTML=board();table();side(); // table first: it updates progress that side() displays
+ const s=$('#st');s.innerHTML=`<span>Power: ${pwr?'ON (+5V)':'OFF'}</span><span>Circuit: ${sim.W.length?sim.W.length+' warning(s)':'valid'}</span><span>Simulation: ${sim.osc?'oscillating':'stable'}</span><span class="msg${(s.dataset.m||'').startsWith('⚠')?' w':''}" aria-live="polite">${s.dataset.m||''}</span>`;
+ $('#bPwr').textContent='Power: '+(pwr?'ON':'OFF');$('#bView').textContent=st.bb?'Trainer view':'Breadboard view';$('#bProbe').textContent='Probe tool: '+(probeMode?'ON':'OFF');$('#bProbe').setAttribute('aria-pressed',probeMode);
+ if(fk){const el=svg.querySelector(`[data-sw="${fk}"]`);el&&el.focus();fk=null}
+ if(fsel){const n=document.querySelector(fsel);n&&n!==document.activeElement&&n.focus()}
+ $('#bPwr').setAttribute('aria-pressed',pwr);$('#bView').setAttribute('aria-pressed',st.bb);$('#bUndo').disabled=hi<1;$('#bRedo').disabled=hi>=hist.length-1;autosave()}
+function check(o){
+ if(!o||!Array.isArray(o.ics)||o.ics.length!==3||!o.ics.every(t=>t===null||Object.hasOwn(ICS,String(t))))return'"ics" must list 3 sockets, each null or a supported IC.';
+ if(!Array.isArray(o.wires)||o.wires.length>300)return'"wires" must be a list.';
+ for(const w of o.wires)if(!Array.isArray(w)||!ALL.has(w[0])||!ALL.has(w[1])||w[0]===w[1])return'Invalid wire: '+JSON.stringify(w);
+ if(o.probes&&(!Array.isArray(o.probes)||!o.probes.every(p=>ALL.has(p))))return'Invalid probes.';
+ if(o.pos&&(!Array.isArray(o.pos)||o.pos.length!==3||!o.pos.every(n=>Number.isInteger(n)&&n>=1&&n<=24)))return'Invalid IC columns.';
+ for(const y in o.exp||{})try{if(!LEDS.includes(y))throw Error('bad output '+y);parse(o.exp[y])}catch(e){return'Bad expression for '+y+': '+e.message}return''}
+const pack=()=>({app:'LogicLab',ics:st.ics,wires:st.wires.map(w=>[w[0],w[1]]),bb:st.bb,pos:st.pos,probes:st.probes,sw,exp});
+function adopt(o){const e=check(o);if(e){msg('⚠ Could not load: '+e);render();return}if(o.sw)SW_.forEach(k=>sw[k]=o.sw[k]?1:0);load({ics:o.ics,bb:!!o.bb,pos:o.pos,probes:o.probes||[],wires:o.wires.map((w,i)=>[w[0],w[1],i%4])},o.exp||{},-1)}
+const dl=(b,n)=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click()};
+const dlgX=()=>{const d=$('#dlg');d.close?d.close():d.removeAttribute('open')},dlg=(t,h)=>{const d=$('#dlg');$('#dt').textContent=t;$('#db').innerHTML=h;$('#db').scrollTop=0;if(!d.open){d.showModal?d.showModal():d.setAttribute('open','')}$('#dc').focus()};
+function selfTest(){
+ const R=[],t=(n,c)=>R.push((c?'✔ ':'✘ ')+n),S0={A:0,B:0,C:0,D:0};
+ const mk=(ic,g)=>({ics:[ic,null,null],wires:[...pw(1),['SW.A','S1.'+g[0]],...(g.length===3?[['SW.B','S1.'+g[1]]]:[]),['S1.'+g[g.length-1],'LED.Y1']]});
+ for(const ic in ICS){const{fn,g}=ICS[ic];t(`IC ${ic} pin mapping + truth table, all gates`,g.every(x=>[0,1].every(a=>[0,1].every(b=>simulate(mk(ic,x),{...S0,A:a,B:b}).nv('LED.Y1')===(x.length===3?GT[fn](a,b):GT.not(a))))))}
+ t('Unconnected input is X, not 0',simulate({ics:['7408',null,null],wires:[...pw(1),['SW.A','S1.1'],['S1.3','LED.Y1']]},{...S0,A:1}).nv('LED.Y1')===N);
+ t('Unpowered IC outputs X',simulate({ics:['7408',null,null],wires:[['SW.A','S1.1'],['SW.B','S1.2'],['S1.3','LED.Y1']]},{...S0,A:1,B:1}).nv('LED.Y1')===N);
+ t('NAND then NOT propagates as AND',[0,1].every(a=>[0,1].every(b=>simulate({ics:['7400','7404',null],wires:[...pw(1),...pw(2),['SW.A','S1.1'],['SW.B','S1.2'],['S1.3','S2.1'],['S2.2','LED.Y1']]},{...S0,A:a,B:b}).nv('LED.Y1')===(a&b))));
+ t('Feedback loop reports oscillation',simulate({ics:['7404',null,null],wires:[...pw(1),['S1.1','S1.2']]},S0).osc);
+ t('Conflicting outputs rejected',!!canConnect({ics:[null,null,null],wires:[]},'SW.A','SW.B'));
+ t('Expression parser: (A AND B) OR C',ev(parse('(A AND B) OR C'),{A:1,B:0,C:1})===1&&ev(parse('A XNOR B'),{A:1,B:1})===1);
+ t('Parser rejects bad input',(()=>{try{parse('A AND');return false}catch(e){return true}})());
+ t('Import validation rejects bad data',!!check({ics:[1],wires:[]})&&!!check({ics:['constructor',null,null],wires:[]})&&!check({ics:[null,null,null],wires:[]}));
+ const bbc={bb:true,pos:[2,12,22],probes:[],ics:['7408',null,null],wires:[['G.1','R2.1'],['R2.5','H.8h'],['P5.1','H.2b'],['SW.A','H.2g'],['SW.B','H.3j'],['H.4i','LED.Y1']]};
+ t('Breadboard strips and rails run an AND gate',[0,1].every(a=>[0,1].every(b=>simulate(bbc,{...S0,A:a,B:b}).nv('LED.Y1')===(a&b))));
+ t('Breadboard: wire in the wrong strip leaves input floating',simulate({...bbc,wires:bbc.wires.map(w=>w[0]==='SW.B'?['SW.B','H.3b']:w)},{...S0,A:1,B:1}).nv('LED.Y1')===N);
+ t('Every built-in experiment matches its expected output (all input rows)',EXPS.every(x=>{const c=bld(x),ins=SW_.filter(k=>c.wires.some(w=>w.includes('SW.'+k)));return Object.entries(x.e).every(([y,e])=>{const A=parse(e);for(let r=0;r<1<<ins.length;r++){const s2={...S0};ins.forEach((k,j)=>s2[k]=(r>>(ins.length-1-j))&1);const m=simulate(c,s2);if(m.nv('LED.'+y)!==ev(A,s2)||m.W.length)return false}return true})}));
+ t('Full adder adds correctly for all 8 inputs (Sum and Cout)',(()=>{const c=bld(EXPS.find(x=>x.n.startsWith('Full adder')));for(let r=0;r<8;r++){const a=r>>2&1,b=r>>1&1,ci=r&1,m=simulate(c,{...S0,A:a,B:b,C:ci}),n=a+b+ci;if(m.nv('LED.Y1')!==(n&1)||m.nv('LED.Y2')!==(n>>1))return false}return true})());
+ t('Quiz bank is valid (answers in range, generators correct)',QB.every(q=>q.o.length>=2&&q.a>=0&&q.a<q.o.length&&QTOP.includes(q.t)&&q.x)&&Array.from({length:40},()=>[genFA(),genNAND()]).flat().every(q=>q.a>=0&&q.a<q.o.length));
+ t('Every fault-finding challenge breaks its circuit, and the unbroken circuit passes',FAULTS.every(F=>{const x=EXPS.find(e=>e.n.startsWith(F.b)),c=bld(x),g=circuitOk(c,x.e);F.m(c);return g&&!circuitOk(c,x.e)}));
+ dlg('Self-test',`<pre>${R.join('\n')}</pre>`)}
+/* ================= QUIZ MODE ================= */
+const QTOP=['All topics','Basic gates & ICs','Full adder','Universal gates'];
+const QL={'Basic gates & ICs':EXPS.findIndex(x=>x.n.startsWith('AND gate')),'Full adder':EXPS.findIndex(x=>x.n.startsWith('Full adder')),'Universal gates':EXPS.findIndex(x=>x.n.startsWith('XOR from NAND'))}; // experiment to practise per topic
+const QB=[
+ {t:'Basic gates & ICs',q:'Which IC contains four 2-input NAND gates?',o:['7400','7402','7408','7432'],a:0,x:'7400 = NAND, 7402 = NOR, 7404 = inverter, 7408 = AND, 7432 = OR, 7486 = XOR.'},
+ {t:'Basic gates & ICs',q:'Which pins supply power to a 14-pin 74xx IC?',o:['Pin 14 = +5V (VCC), pin 7 = GND','Pin 1 = +5V, pin 14 = GND','Pin 7 = +5V, pin 14 = GND','Pins 1 and 2'],a:0,x:'On every 14-pin 74xx chip VCC is pin 14 and GND is pin 7. Without both, LogicLab shows the outputs as X.'},
+ {t:'Basic gates & ICs',q:'An AND gate has input A = 1 and input B left unconnected. What does LogicLab show at the output?',o:['X (unknown)','0 (LOW)','1 (HIGH)','The same as input A'],a:0,x:'A floating input has no defined level, and 1 AND X is unknown, so the simulator reports X instead of guessing.'},
+ {t:'Basic gates & ICs',q:'When is the output of a 2-input XOR gate HIGH?',o:['When the inputs are different','When both inputs are HIGH','When both inputs are LOW','When at least one input is HIGH'],a:0,x:'XOR is HIGH when the inputs differ. That is why it is the Sum function of an adder.'},
+ {t:'Basic gates & ICs',q:'In the 7402 NOR IC, which pin is the output of gate 1?',o:['Pin 1','Pin 3','Pin 2','Pin 6'],a:0,x:'The 7402 pinout differs from the 7400, 7408 and 7432. Gate 1 has its output on pin 1 and its inputs on pins 2 and 3.'},
+ {t:'Basic gates & ICs',q:'What is the output of an AND gate when one input is LOW?',o:['Always LOW','Always HIGH','Always unknown','The same as the other input, inverted'],a:0,x:'AND is HIGH only when every input is HIGH, so a single LOW input forces the output LOW.'},
+ {t:'Full adder',q:'A half adder produces Sum and Carry. Which gates produce them?',o:['Sum = XOR, Carry = AND','Sum = AND, Carry = XOR','Sum = OR, Carry = AND','Sum = XOR, Carry = OR'],a:0,x:'Sum = A⊕B and Carry = A·B. A half adder has no carry-in, which is why it cannot be chained.'},
+ {t:'Full adder',q:'How many inputs and outputs does a full adder have?',o:['3 inputs (A, B, Cin) and 2 outputs (Sum, Cout)','2 inputs and 2 outputs','3 inputs and 1 output','2 inputs and 3 outputs'],a:0,x:'The extra input is the carry-in from the previous bit. The outputs are Sum and the carry-out, Cout.'},
+ {t:'Full adder',q:'Which expression gives the Sum of a full adder?',o:['A ⊕ B ⊕ Cin','A · B · Cin','A + B + Cin (OR)','(A · B) + Cin'],a:0,x:'Sum is HIGH when an odd number of inputs are HIGH, which is exactly what chained XOR gates give.'},
+ {t:'Full adder',q:'Which expression gives the carry-out (Cout) of a full adder?',o:['AB + Cin(A ⊕ B)','A ⊕ B ⊕ Cin','A + B + Cin (OR)','A · B · Cin'],a:0,x:'A carry is produced either by the first half adder (AB) or when the second half adder adds Cin to A⊕B.'},
+ {t:'Full adder',q:'The carry-out of a full adder is HIGH when…',o:['at least two of the three inputs are HIGH','exactly one input is HIGH','all three inputs are LOW','an odd number of inputs are HIGH'],a:0,x:'Cout is the majority function. Two or more 1s add up to 2 or 3, which needs a carry bit.'},
+ {t:'Full adder',q:'A full adder is built from…',o:['two half adders and an OR gate','two half adders and an AND gate','three XOR gates only','one half adder and a NOT gate'],a:0,x:'The first half adder adds A and B. The second adds that sum and Cin. The OR gate combines the two carries (they can never both be 1).'},
+ {t:'Full adder',q:'How many ICs does the LogicLab full adder use (7486, 7408, 7432)?',o:['3','2','4','5'],a:0,x:'One 7486 (2 XOR gates), one 7408 (2 AND gates) and one 7432 (1 OR gate): 5 gates across 3 chips.'},
+ {t:'Full adder',q:'Why use full adders instead of half adders to add multi-bit numbers?',o:['A full adder accepts the carry from the previous bit','A full adder is faster','A full adder uses fewer gates','A half adder has no Sum output'],a:0,x:'Bits after the first need a carry-in. Chaining full adders (ripple-carry) passes each Cout to the next Cin.'},
+ {t:'Universal gates',q:'Which gates are called universal gates?',o:['NAND and NOR','AND and OR','XOR and XNOR','NOT and AND'],a:0,x:'Any Boolean function can be built from NAND gates alone, or from NOR gates alone.'},
+ {t:'Universal gates',q:'What makes a gate universal?',o:['Any Boolean function can be built using only that gate','It has more than two inputs','It is the fastest gate','It never outputs X'],a:0,x:'This property is called functional completeness. NAND and NOR can each make NOT, AND and OR.'},
+ {t:'Universal gates',q:'How do you make a NOT gate from a NAND gate?',o:['Tie both inputs together','Connect one input to GND','Leave one input unconnected','Connect the output back to an input'],a:0,x:'NAND(A,A) = NOT A. Tying one input to +5V also works, but joining the inputs is the standard method. Tying one input to GND would force the output HIGH.'},
+ {t:'Universal gates',q:'How many NAND gates are needed to make an AND gate?',o:['2','1','3','4'],a:0,x:'AND = NAND followed by a NAND wired as an inverter.'},
+ {t:'Universal gates',q:'How many NAND gates are needed to make an OR gate?',o:['3','2','4','1'],a:0,x:'A + B = NAND(NOT A, NOT B). Two NANDs act as inverters and one NAND combines them.'},
+ {t:'Universal gates',q:'What is the minimum number of NAND gates needed to build an XOR gate?',o:['4','2','3','5'],a:0,x:'N1 = A NAND B, N2 = A NAND N1, N3 = B NAND N1, Y = N2 NAND N3. One 7400 has exactly four gates.'},
+ {t:'Universal gates',q:'How many NOR gates are needed to make an AND gate?',o:['3','2','1','4'],a:0,x:'A·B = NOR(NOT A, NOT B). Two NORs act as inverters and one NOR combines them.'},
+ {t:'Universal gates',q:'How many NOR gates are needed to make an OR gate?',o:['2','1','3','4'],a:0,x:'OR = NOR followed by a NOR wired as an inverter.'},
+ {t:'Universal gates',q:'De Morgan\'s law: NOT(A AND B) equals…',o:['(NOT A) OR (NOT B)','(NOT A) AND (NOT B)','A OR B','NOT A AND B'],a:0,x:'Break the bar, change the operator. This law is why NAND(NOT A, NOT B) equals A OR B.'},
+ {t:'Universal gates',q:'How many 7400 chips does a NAND-only XOR gate need?',o:['1','2','3','4'],a:0,x:'The XOR needs four NAND gates and one 7400 contains four.'}
+];
+const ri=()=>Math.random()<.5?0:1,shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const genFA=()=>{const a=ri(),b=ri(),c=ri(),n=a+b+c,S=n&1,C=n>>1;
+ return{t:'Full adder',k:1,q:`A full adder has A = ${a}, B = ${b} and Cin = ${c}. What are Sum and Cout?`,o:['Sum = 0, Cout = 0','Sum = 1, Cout = 0','Sum = 0, Cout = 1','Sum = 1, Cout = 1'],a:S+2*C,x:`${a} + ${b} + ${c} = ${n} in decimal, which is ${C}${S} in binary. So Cout = ${C} and Sum = ${S}.`}};
+const genNAND=()=>{const a=ri(),b=ri(),n1=1-(a&b),n2=1-(a&n1),n3=1-(b&n1),y=1-(n2&n3);
+ return{t:'Universal gates',k:1,q:`In the four-NAND XOR circuit (N1 = A NAND B, N2 = A NAND N1, N3 = B NAND N1, Y = N2 NAND N3), A = ${a} and B = ${b}. What is Y?`,o:['0 (LOW)','1 (HIGH)'],a:y,x:`N1 = ${n1}, N2 = ${n2}, N3 = ${n3}, so Y = ${n2} NAND ${n3} = ${y}. That equals ${a} XOR ${b}.`}};
+const QS=Object.assign({best:0,att:0,last:null},(()=>{try{return JSON.parse(LS.get('ll.quiz'))||{}}catch(e){return{}}})());
+const quizLine=()=>QS.att?`best ${QS.best}%, last ${QS.last}% (${QS.att} attempt${QS.att>1?'s':''})`:'not attempted yet';
+let qz=null;
+function qOpen(){return!!(qz&&qz.open)}
+function qBuild(topic,n){
+ const all=topic==='All topics';let p=QB.filter(q=>all||q.t===topic);
+ if(all||topic==='Full adder')p=p.concat([genFA(),genFA()]);
+ if(all||topic==='Universal gates')p=p.concat([genNAND(),genNAND()]);
+ return shuf(p).slice(0,Math.min(n,p.length)).map(q=>{const o=q.o.map((t,i)=>({t,ok:i===q.a}));return{...q,o:q.k?o:shuf(o)}})}
+function qStart(again){
+ if(!again){qz.topic=$('#qT').value;qz.n=+$('#qN').value}
+ qz.list=qBuild(qz.topic,qz.n);qz.i=0;qz.score=0;qz.picked=null;qz.res=[];qz.scr='q';qShow()}
+function qAns(j){
+ if(qz.scr!=='q'||qz.picked!==null)return;const q=qz.list[qz.i],ok=!!q.o[j].ok;
+ qz.picked=j;if(ok)qz.score++;qz.res.push({q,j,ok});qShow()}
+function qNext(){
+ qz.i++;qz.picked=null;
+ if(qz.i>=qz.list.length){const pct=Math.round(qz.score/qz.list.length*100);QS.att++;QS.last=pct;QS.best=Math.max(QS.best,pct);LS.set('ll.quiz',JSON.stringify(QS));qz.scr='end';render()}
+ qShow()}
+function qClose(){if(!qz)return;qz.open=false;$('#quiz').hidden=true;$('#bQuiz').focus()}
+function qShow(){
+ const el=$('#quiz');el.hidden=false;let h='',f=null;
+ if(qz.scr==='setup'){
+  h=`<div class="qp"><h2 id="qh" tabindex="-1">Quiz mode</h2><p>Test yourself on gates, adders and universal gates. You get instant feedback and an explanation after every question.</p>
+  <label>Topic<select id="qT">${QTOP.map(t=>`<option${t===qz.topic?' selected':''}>${t}</option>`).join('')}</select></label>
+  <label>Number of questions<select id="qN">${[5,10,15].map(n=>`<option${n===qz.n?' selected':''}>${n}</option>`).join('')}</select></label>
+  <p style="color:var(--mu)">Your scores: ${quizLine()}. Smaller topics may have fewer questions than you choose.</p>
+  <button data-q="start">Start quiz</button> <button data-q="close">Close</button></div>`;f='#qT'}
+ else if(qz.scr==='q'){
+  const q=qz.list[qz.i],n=qz.list.length,p=qz.picked,done=p!==null,right=q.o.find(o=>o.ok);
+  h=`<div class="qp"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--mu);font-size:12px"><span>Question ${qz.i+1} of ${n} · ${q.t}</span><span>Score: ${qz.score}</span></div>
+  <div class="qbar" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${qz.i+(done?1:0)}"><i style="width:${(qz.i+(done?1:0))/n*100}%"></i></div>
+  <h2 id="qh" tabindex="-1" style="font-size:17px;margin:14px 0 6px">${q.q}</h2>
+  <div role="group" aria-label="Answer choices">${q.o.map((o,j)=>`<button class="qo${done?(o.ok?' good':j===p?' miss':''):''}"${done?' disabled':''} data-qo="${j}">${j+1}. ${o.t}${done&&o.ok?' ✔':''}${done&&j===p&&!o.ok?' ✘':''}</button>`).join('')}</div>
+  <div aria-live="polite">${done?`<p class="${q.o[p].ok?'ok':'bad'}"><b>${q.o[p].ok?'✔ Correct.':'✘ Not quite. Correct answer: '+right.t}</b></p><p>${q.x}</p>`:'<p style="color:var(--mu);font-size:12px">Click an answer or press 1 to '+q.o.length+'.</p>'}</div>
+  <div>${done?`<button data-q="next">${qz.i+1<n?'Next question':'See results'}</button> `:''}<button data-q="setup">Quit quiz</button></div></div>`;
+  f=done?'[data-q=next]':'#qh'}
+ else{
+  const n=qz.list.length,pct=Math.round(qz.score/n*100),miss=qz.res.filter(r=>!r.ok),tp=[...new Set(miss.map(r=>r.q.t))];
+  h=`<div class="qp"><h2 id="qh" tabindex="-1">Quiz complete</h2>
+  <p style="font-size:22px;margin:6px 0"><b class="${pct>=70?'ok':pct>=40?'w':'bad'}">${qz.score} / ${n} (${pct}%)</b></p>
+  <p>${pct===100?'Perfect score. Try the harder circuits in the lab.':pct>=70?'Good work. Review the questions you missed below.':pct>=40?'A fair start. Re-run the matching experiment, then try again.':'Keep practising. Load the matching experiment and watch the truth table.'}</p>
+  <p style="color:var(--mu)">Your scores: ${quizLine()}.</p>
+  ${miss.length?`<h3>Review: missed questions</h3>`+miss.map(r=>`<div style="margin:8px 0;padding:8px;border:1px solid var(--ln);border-radius:4px"><div><b>${r.q.q}</b></div><div class="bad">Your answer: ${r.q.o[r.j].t}</div><div class="ok">Correct: ${r.q.o.find(o=>o.ok).t}</div><div>${r.q.x}</div></div>`).join(''):''}
+  ${tp.length?`<h3>Practise in the lab</h3>`+tp.map(t=>`<button data-qlab="${QL[t]}">Open: ${EXPS[QL[t]].n}</button> `).join(''):''}
+  <p><button data-q="again">Retry same settings</button> <button data-q="setup">New quiz</button> <button data-q="close">Close</button></p></div>`;f='[data-q=again]'}
+ el.innerHTML=h;const t=el.querySelector(f);t&&t.focus()}
+function quizOpen(){qz=qz||{topic:'All topics',n:10};qz.open=true;qz.scr='setup';qShow()}
+$('#quiz').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.qo!==undefined)qAns(+b.dataset.qo);
+ else if(b.dataset.qlab!==undefined){const i=+b.dataset.qlab;qClose();load(bld(EXPS[i]),EXPS[i].e,i,true);msg('Loaded experiment '+(i+1)+'.');render()}
+ else if(b.dataset.q==='start')qStart();else if(b.dataset.q==='next')qNext();else if(b.dataset.q==='again')qStart(true);
+ else if(b.dataset.q==='setup'){qz.scr='setup';qShow()}else if(b.dataset.q==='close')qClose()});
+addEventListener('keydown',e=>{if(!qOpen())return;
+ if(e.key==='Escape'){qClose();return}
+ if(e.key==='Tab'){const a=[...$('#quiz').querySelectorAll('button:not([disabled]),select')];if(!a.length)return;const i=a.indexOf(document.activeElement);
+  if(e.shiftKey&&i<=0){e.preventDefault();a[a.length-1].focus()}else if(!e.shiftKey&&i===a.length-1){e.preventDefault();a[0].focus()}return}
+ if(qz.scr==='q'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){const k=+e.key;if(k>=1&&k<=qz.list[qz.i].o.length)qAns(k-1)}});
+/* events */
+svg.addEventListener('click',e=>{if(skip)return;let el;const T=e.target;
+ if(el=T.closest('[data-probe]')){st.probes.splice(st.probes.indexOf(el.dataset.probe),1);changed()}
+ else if(el=T.closest('[data-pin]'))pinClick(el.dataset.pin);
+ else if(el=T.closest('[data-sw]'))tog(el.dataset.sw);
+ else if(el=T.closest('[data-wire]')){selW=+el.dataset.wire;pend=null;msg('Wire selected. Press Delete or use Delete wire.');render()}
+ else{if(el=T.closest('[data-soc]'))selS=+el.dataset.soc;pend=null;selW=-1;msg('');render()}});
+svg.addEventListener('keydown',e=>{const el=e.target.closest&&e.target.closest('[data-sw]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tog(el.dataset.sw)}});
+addEventListener('keydown',e=>{if(qOpen()||!$('#rep').hidden||$('#dlg').open||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const k=e.key.toUpperCase();if((e.ctrlKey||e.metaKey)&&(k==='Z'||k==='Y')){e.preventDefault();(k==='Y'||e.shiftKey)?redo():undo();return}if(e.key==='?'){$('#bHelp').click();return}
+ if(e.key==='Escape'){if(bw.classList.contains('fs')&&!document.fullscreenElement)fs(false);pend=null;selW=-1;msg('');render()}else if((e.key==='Delete'||e.key==='Backspace')&&selW>=0)delW();else if(SW_.includes(k)&&!e.ctrlKey&&!e.metaKey&&!e.altKey)tog(k)});
+document.addEventListener('change',e=>{if(e.target.dataset.pos!==undefined){st.pos[+e.target.dataset.pos]=+e.target.value;changed();return}if(e.target.dataset.ic!==undefined){st.ics[+e.target.dataset.ic]=e.target.value||null;selS=+e.target.dataset.ic;changed()}});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(b){const i=+b.dataset.ex;SW_.forEach(k=>sw[k]=0);load(bld(EXPS[i]),EXPS[i].e,i,true);msg('Loaded experiment '+(i+1)+'.');render()}});
+const on=(id,fn)=>$(id).addEventListener('click',fn);
+on('#bNew',()=>{load({ics:[null,null,null],wires:[]},{},-1,false)});
+on('#bSave',()=>{LS.set('ll.save',JSON.stringify(pack()));msg('Saved to this browser.');render()});
+on('#bLoad',()=>{const r=LS.get('ll.save');if(!r){msg('⚠ Nothing saved yet.');render()}else try{adopt(JSON.parse(r))}catch(e){msg('⚠ Saved circuit is corrupt.');render()}});
+on('#bExp',()=>dl(new Blob([JSON.stringify(pack(),null,1)],{type:'application/json'}),'logiclab-circuit.json'));
+on('#bImp',()=>$('#file').click());
+$('#file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{adopt(JSON.parse(t))}catch(x){msg('⚠ Not valid JSON.');render()}});e.target.value=''});
+on('#bImg',()=>{const s=svg.cloneNode(true);s.setAttribute('xmlns','http://www.w3.org/2000/svg');s.removeAttribute('style');s.setAttribute('width',1000);s.setAttribute('height',540);const im=new Image();
+ im.onload=()=>{const c=document.createElement('canvas');c.width=2000;c.height=1080;c.getContext('2d').drawImage(im,0,0,2000,1080);c.toBlob(b=>dl(b,'logiclab-board.png'))};
+ im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(s))});
+const undo=()=>{if(hi>0){hi--;st=clone(hist[hi]);vis.clear();selW=-1;pend=null;render()}},redo=()=>{if(hi<hist.length-1){hi++;st=clone(hist[hi]);vis.clear();selW=-1;pend=null;render()}};on('#bUndo',undo);
+on('#bRedo',redo);
+on('#bReset',()=>{sw={A:0,B:0,C:0,D:0};pwr=true;pend=null;selW=-1;vis.clear();msg('Simulation reset.');render()});
+on('#bPwr',()=>{pwr=!pwr;vis.clear();render()});
+on('#bDel',delW);
+on('#bClr',()=>{if(st.wires.length){st.wires=[];selW=-1;changed()}});
+on('#bTest',selfTest);on('#bRep',report);on('#bQuiz',quizOpen);
+on('#bHelp',()=>dlg('How to use LogicLab',`<ol><li>Pick an IC for each socket (right panel), or load an experiment (left panel).</li><li>Click a pin, then another pin, to place a wire. Red = +5V, black = GND, other colours = signals.</li><li>Every IC needs +5V on pin 14 and GND on pin 7.</li><li>Click switches (or press A, B, C, D) to set inputs. LEDs show HIGH, LOW or unknown (?).</li><li>Click a wire to select it, then press Delete. Esc cancels.</li><li>Experiments 9 to 21 cover the full adder and the universal gates (NAND-only and NOR-only circuits). Use Quiz mode in the header to test yourself.</li><li>Shortcuts: A to D toggle switches, Ctrl+Z / Ctrl+Y undo and redo, Delete removes the selected wire, ? opens this help. No mouse? Use Quick wire and the Wires list. Click a truth-table row to set the inputs.</li><li>Pin colours: green = HIGH, navy = LOW, amber = unknown, grey = not wired.</li></ol><p>Run this file by opening it in any browser. No install needed.</p>`));
+on('#bL',()=>$('#left').classList.toggle('off'));on('#bR',()=>$('#right').classList.toggle('off'));
+on('#bExpr',()=>{const m=$('#expr').value.match(/^\s*(Y[1-4])\s*=\s*(.+)$/i),y=m?m[1].toUpperCase():'Y1',s=m?m[2]:$('#expr').value;
+ try{parse(s);exp[y]=s;vis.clear();$('#exerr').textContent='';render()}catch(e){$('#exerr').textContent='Error: '+e.message}});
+function fs(on){if(on){bw.classList.add('fs');bw.requestFullscreen&&bw.requestFullscreen().catch(()=>{})}else{bw.classList.remove('fs');document.fullscreenElement&&document.exitFullscreen()}}
+on('#bFs',()=>fs(!bw.classList.contains('fs')));on('#bFsx',()=>fs(false));
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)bw.classList.remove('fs')});
+on('#bView',()=>{st.bb=!st.bb;pend=null;selW=-1;msg(st.bb?'Breadboard view: wire to any hole. Holes in the same column half are joined.':'Trainer view.');changed()});
+on('#bProbe',()=>{probeMode=!probeMode;pend=null;msg(probeMode?'Probe tool on: click any pin to attach or remove a probe.':'');render()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b)$({pwr:'#bPwr',view:'#bView',probe:'#bProbe'}[b.dataset.act]).click()});
+/* drag from a pin to another pin to wire them */
+const pt=e=>{const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())};
+const pinAt=e=>{const h=document.elementFromPoint(e.clientX,e.clientY),el=h&&h.closest&&h.closest('[data-pin]');return el&&el.dataset.pin};
+const endDrag=()=>{const t=document.getElementById('tmp');t&&t.remove()};
+svg.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-pin]');if(!el||probeMode||e.button>0)return;drag={a:el.dataset.pin,x:e.clientX,y:e.clientY,on:false}});
+addEventListener('pointermove',e=>{if(!drag)return;
+ if(!drag.on){if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<8)return;drag.on=true;pend=null;const t=document.createElementNS('http://www.w3.org/2000/svg','path');t.id='tmp';t.setAttribute('fill','none');t.setAttribute('stroke','#22d3ee');t.setAttribute('stroke-width','3');t.setAttribute('stroke-dasharray','6 4');t.setAttribute('pointer-events','none');svg.appendChild(t)}
+ const[x1,y1]=xy(drag.a),q=pt(e);(document.getElementById('tmp')||{setAttribute(){}}).setAttribute('d',`M${x1} ${y1}L${q.x} ${q.y}`)});
+addEventListener('pointerup',e=>{if(!drag)return;const d=drag;drag=null;if(!d.on)return;endDrag();skip=true;setTimeout(()=>skip=false,80);
+ const p=pinAt(e);if(p&&p!==d.a)link(d.a,p);else{msg('Drag ended away from a pin. Release on a pin to connect.');render()}});
+addEventListener('pointercancel',()=>{if(drag&&drag.on)endDrag();drag=null});
+/* ================= FAULT-FINDING CHALLENGES ================= */
+let flt=-1,FO={};
+const FW=(c,a,b,n)=>{const i=c.wires.findIndex(w=>w[0]===a&&w[1]===b);if(i<0)return;n?c.wires[i]=[n[0],n[1],c.wires[i][2]]:c.wires.splice(i,1)};
+const FAULTS=[
+ {b:'AND gate',n:'Dead chip',s:'The LED never lights and shows an unknown state. A warning mentions power.',h:'Look at the Warnings panel. Which IC pin is missing a wire?',f:'The GND wire to IC1 pin 7 was removed. Wire a GND jack to pin 7.',m:c=>FW(c,'G.1','S1.7')},
+ {b:'AND gate',n:'Wrong supply pin',s:'The chip is wired but the LED stays unknown. The warning says the IC has no power.',h:'Count the pins. VCC is not pin 13.',f:'+5V was wired to pin 13. VCC is pin 14, so move the +5V wire there.',m:c=>FW(c,'P5.1','S1.14',['P5.1','S1.13'])},
+ {b:'OR gate',n:'Wrong chip in the socket',s:'Everything is wired and powered, but the LED is HIGH only when A and B are both HIGH.',h:'Compare the truth table with the expected column. Which gate behaves like that?',f:'A 7408 (AND) is in socket 1. Choose the 7432 (OR) instead.',m:c=>{c.ics[0]='7408'}},
+ {b:'NAND gate',n:'Floating input',s:'With A = 1 the LED shows unknown (?), whatever the state of B.',h:'A gate input that is not connected has no defined level. Which input?',f:'Switch B is not wired to pin 2. Add a wire from switch B to IC1 pin 2.',m:c=>FW(c,'SW.B','S1.2')},
+ {b:'NOR gate',n:'Wrong pinout',s:'The Warnings panel reports a conflict and the LED shows unknown.',h:'The 7402 pinout is not the same as the 7400. Check which pins are inputs.',f:'The wires use the 7400 pinout. On the 7402 gate 1 the inputs are pins 2 and 3 and the output is pin 1.',m:c=>{c.wires=c.wires.filter(w=>/^(P5|G)\./.test(w[0])).concat([['SW.A','S1.1',0],['SW.B','S1.2',1],['S1.3','LED.Y1',2]])}},
+ {b:'NOT from NAND',n:'LED on the wrong pin',s:'The LED simply copies switch A instead of inverting it.',h:'Which pin of the NAND gate is the output?',f:'The LED is wired to pin 2, an input. Move it to pin 3, the output.',m:c=>FW(c,'S1.3','LED.Y1',['S1.2','LED.Y1'])},
+ {b:'XOR from NAND',n:'Crossed wire',s:'The output is correct for three rows but wrong when A = 0 and B = 1.',h:'The last NAND combines the outputs of the two middle NANDs. Check pin 13.',f:'Pin 13 is fed from pin 3 (N1). It should come from pin 8 (N3).',m:c=>FW(c,'S1.8','S1.13',['S1.3','S1.13'])},
+ {b:'Half adder',n:'Carry taken from the wrong gate',s:'The Sum LED works, but the Carry LED (Y2) always matches Sum.',h:'Carry = A AND B. Which chip makes AND?',f:'Y2 is wired to the XOR output (IC1 pin 3). It should come from the 7408 output, IC2 pin 3.',m:c=>FW(c,'S2.3','LED.Y2',['S1.3','LED.Y2'])},
+ {b:'Full adder',n:'Sum fed into the carry OR',s:'Sum is right, but Cout is HIGH for some inputs that should not carry (for example A = 1, B = 0, Cin = 0).',h:'Trace both inputs of the OR gate. Each should be a carry from an AND gate.',f:'7432 pin 2 is fed from the XOR output (IC1 pin 6) instead of the second AND output (IC2 pin 6).',m:c=>FW(c,'S2.6','S3.2',['S1.6','S3.2'])}
+];
+const circuitOk=(c,e)=>{const ins=SW_.filter(k=>c.wires.some(w=>w.includes('SW.'+k)));return Object.entries(e).every(([y,x])=>{const A=parse(x);for(let r=0;r<1<<ins.length;r++){const s2={A:0,B:0,C:0,D:0};ins.forEach((k,j)=>s2[k]=(r>>(ins.length-1-j))&1);const m=simulate(c,s2);if(m.nv('LED.'+y)!==ev(A,s2)||m.W.length)return false}return true})};
+const fhtml=F=>{const x=EXPS.find(e=>e.n.startsWith(F.b));return`<h3>Fault finding: ${F.n}</h3><p><b>Task:</b> This should work as <i>${x.n}</i>. One fault has been planted. Find it and fix it until the truth table verifies.</p><p><b>Symptom:</b> ${F.s}</p><details data-fd="h"${FO.h?' open':''}><summary>Hint</summary><p>${F.h}</p></details><details data-fd="f"${FO.f?' open':''}><summary>Reveal the fault</summary><p>${F.f}</p></details>`};
+document.addEventListener('toggle',e=>{if(e.target.dataset&&e.target.dataset.fd)FO[e.target.dataset.fd]=e.target.open},true);
+function startFault(i){const F=FAULTS[i],x=EXPS.find(e=>e.n.startsWith(F.b)),c=bld(x);F.m(c);SW_.forEach(k=>sw[k]=0);FO={};load(c,x.e,-1,true);flt=i;msg('Fault finding: find and fix the one fault.');render()}
+/* ================= PRINTABLE LAB REPORT ================= */
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function report(){
+ const x=EXPS[cur],F=FAULTS[flt],ins=SW_.filter(k=>st.wires.some(w=>w.includes('SW.'+k))),outs=LEDS.filter(y=>st.wires.some(w=>w.includes('LED.'+y))),A={};
+ outs.forEach(y=>{if(exp[y])try{A[y]=parse(exp[y])}catch(e){}});
+ let pass=true,rows='';
+ if(ins.length&&outs.length)for(let r=0;r<1<<ins.length;r++){const s2={A:0,B:0,C:0,D:0};ins.forEach((k,j)=>s2[k]=(r>>(ins.length-1-j))&1);const m=simulate(st,s2,true);
+  rows+='<tr>'+ins.map(k=>`<td>${s2[k]}</td>`).join('')+outs.map(y=>{const o=m.nv('LED.'+y),e=A[y]?ev(A[y],s2):null,g=A[y]?o===e:null;if(g===false)pass=false;return(A[y]?`<td>${e}</td>`:'')+`<td>${o}${g===null?'':g?' ✓':' ✗'}</td>`}).join('')+'</tr>'}
+ const W=simulate(st,sw,true).W,graded=outs.length&&outs.every(y=>A[y]),res=!outs.length?'No LED is wired, so there are no observations.':!graded?'No expected output was set, so observed values are recorded without a pass or fail check.':pass&&!W.length?'<b class="rp">PASS</b>: observed output matches the expected output for every input combination.':'<b class="rf">FAIL</b>: '+(pass?'the outputs match but the circuit has warnings (see below).':'one or more rows do not match the expected output.');
+ const sv=svg.cloneNode(true);sv.removeAttribute('style');sv.removeAttribute('role');const tmp=sv.querySelector('#tmp');tmp&&tmp.remove();
+ let who={};try{who=JSON.parse(LS.get('ll.who'))||{}}catch(e){}
+ const ics=st.ics.map((t,i)=>t?`IC${i+1}: ${t} (${ICS[t].d})`:'').filter(Boolean);
+ $('#rbody').innerHTML=`<h1>LogicLab: Laboratory Report</h1><div class="f"><label>Name<input id="rn" value="${esc(who.n||'')}"></label><label>Roll no. / class<input id="rr" value="${esc(who.r||'')}"></label><label>Date<input id="rd" value="${new Date().toLocaleDateString()}"></label></div>
+ <h2>Experiment</h2><p>${F?'Fault finding: '+esc(F.n):x?esc(x.n):'Free circuit'}</p>
+ <h2>Aim</h2><p>${F?'Find and fix the planted fault so the circuit behaves as intended. <b>Symptom:</b> '+esc(F.s):x?esc(x.aim):'Build and test a digital logic circuit.'}</p>
+ <h2>Components</h2><p>${ics.length?ics.map(esc).join('; ')+'; ':''}logic switches, LED indicators, +5V and GND supply.</p>
+ ${x&&!F?`<h2>Theory</h2><p>${esc(x.th)}</p>`:''}
+ <h2>Circuit diagram</h2>${sv.outerHTML}
+ <h2>Connections (${st.wires.length})</h2><ol>${st.wires.map(w=>`<li>${esc(pretty(w[0]))} → ${esc(pretty(w[1]))}</li>`).join('')||'<li>None</li>'}</ol>
+ <h2>Observation table</h2>${rows?`<table><tr>${ins.map(k=>`<th>${k}</th>`).join('')}${outs.map(y=>(A[y]?`<th>${y} expected</th>`:'')+`<th>${y} observed</th>`).join('')}</tr>${rows}</table>`:'<p>Wire at least one switch and one LED to record a truth table.</p>'}
+ <h2>Result</h2><p>${res}</p>${F&&graded&&pass&&!W.length?`<p><b>Fault found and fixed:</b> ${esc(F.f)}</p>`:''}
+ ${W.length?`<h2>Warnings</h2><ul>${W.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
+ ${x&&!F?`<h2>Viva question</h2><p>${esc(x.v)}</p><p><textarea rows="3" aria-label="Viva answer" placeholder="Your answer"></textarea></p>`:''}
+ <h2>Remarks</h2><p><textarea rows="4" aria-label="Remarks"></textarea></p>`;
+ $('#rep').hidden=false;$('#rPrint').focus()}
+const rClose=()=>{$('#rep').hidden=true;$('#bRep').focus()};
+on('#rClose',rClose);
+on('#rPrint',()=>{try{print()}catch(e){msg('⚠ Printing is blocked here. Use Download HTML and print that file.');render()}});
+on('#rDl',()=>{const b=$('#rbody').cloneNode(true);b.querySelectorAll('input').forEach(i=>i.setAttribute('value',$('#rbody').querySelector('#'+i.id).value));const ta=$('#rbody').querySelectorAll('textarea');b.querySelectorAll('textarea').forEach((t,i)=>t.textContent=ta[i].value);
+ const css=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
+ dl(new Blob([`<!DOCTYPE html><html lang="en"><meta charset="utf-8"><title>LogicLab report</title><style>${css}\nbody{display:block;height:auto;overflow:auto;background:#fff}#rbody{margin:12px auto}</style><div id="rbody">${b.innerHTML}</div>`],{type:'text/html'}),'logiclab-report.html')});
+document.addEventListener('input',e=>{if(e.target.id==='rn'||e.target.id==='rr')LS.set('ll.who',JSON.stringify({n:$('#rn').value,r:$('#rr').value}))});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#rep').hidden)rClose()});
+/* quick wire, wire list, challenge mode, row click, progress reset */
+let qwm=null,rpc=false,at;
+function qwFill(){if(qwm===st.bb)return;qwm=st.bb;const g=(l,a)=>`<optgroup label="${l}">${a.map(p=>`<option value="${p}">${pretty(p)}</option>`).join('')}</optgroup>`,
+ o='<option value="">Choose a pin…</option>'+g('Power',PINS.filter(p=>/^(P5|G)\./.test(p)))+g('Switches',PINS.filter(p=>/^SW\./.test(p)))+g('LEDs',PINS.filter(p=>/^LED\./.test(p)))+[1,2,3].map(n=>g('IC'+n+' pins',PINS.filter(p=>p.startsWith('S'+n+'.')))).join('')+(st.bb?g('Breadboard holes',HOLES.filter(h=>/^H\./.test(h)))+g('Rails',HOLES.filter(h=>/^R\d/.test(h))):'');
+ $('#qwa').innerHTML=o;$('#qwb').innerHTML=o}
+on('#bQw',()=>{const a=$('#qwa').value,b=$('#qwb').value;if(!a||!b){msg('⚠ Choose two pins first.');render()}else link(a,b)});
+on('#bExpC',()=>{exp={};vis.clear();$('#exerr').textContent='';render()});
+$('#expr').addEventListener('keydown',e=>{if(e.key==='Enter')$('#bExpr').click()});
+document.addEventListener('click',e=>{const T=e.target;let b;
+ if(b=T.closest('[data-dw]')){st.wires.splice(+b.dataset.dw,1);selW=-1;changed()}
+ else if(b=T.closest('[data-exb]')){const x=EXPS[+b.dataset.exb],c=bld(x);c.wires=c.wires.filter(w=>/^(P5|G)\./.test(w[0]));SW_.forEach(k=>sw[k]=0);load(c,x.e,+b.dataset.exb,true);msg('Challenge: place the signal wires yourself, then check the truth table.');render()}
+ else if(b=T.closest('[data-fl]')){startFault(b.dataset.fl==='next'?(flt+1)%FAULTS.length:+b.dataset.fl)}
+ else if(b=T.closest('tr[data-r]')){b.dataset.r.split(',').forEach(p=>{const[k,v]=p.split('=');sw[k]=+v});render()}
+ else if(T.id==='bRp'){if(!rpc){rpc=true;render();setTimeout(()=>{rpc=false;render()},4000);return}rpc=false;stats={ok:0,n:0,built:0,done:[],fd:[]};saveStats();QS.best=0;QS.att=0;QS.last=null;LS.set('ll.quiz',JSON.stringify(QS));msg('Progress reset.');render()}});
+/* autosave and restore the last circuit */
+const autosave=()=>{clearTimeout(at);at=setTimeout(()=>LS.set('ll.auto',JSON.stringify({...pack(),cur,flt})),400)};
+function restore(){try{const o=JSON.parse(LS.get('ll.auto'));if(o&&!check(o)){if(o.sw)SW_.forEach(k=>sw[k]=o.sw[k]?1:0);load({ics:o.ics,bb:!!o.bb,pos:o.pos,probes:o.probes||[],wires:o.wires.map((w,i)=>[w[0],w[1],i%4])},o.exp||{},Number.isInteger(o.cur)&&o.cur>=0&&o.cur<EXPS.length?o.cur:-1);Number.isInteger(o.flt)&&o.flt>=0&&o.flt<FAULTS.length&&(flt=o.flt);msg('Restored your last circuit.');render();return true}}catch(e){}return false}
+/* start: restore the last session, else the demo AND-gate circuit */
+on('#bTh',()=>{const k=Object.keys(TH);th=k[(k.indexOf(th)+1)%k.length];try{localStorage.setItem('ll.th',th)}catch(e){}render();toast('Board colour: '+th)});
+on('#bAuto',()=>{const b=$('#bAuto');if(acT){clearInterval(acT);acT=null;b.setAttribute('aria-pressed','false');b.textContent='Auto-count';return}
+ const ins=SW_.filter(k=>st.wires.some(w=>w.includes('SW.'+k)));if(!ins.length){toast('Wire at least one switch first');return}
+ let n=0;b.setAttribute('aria-pressed','true');b.textContent='Stop counting';acT=setInterval(()=>{const ins=SW_.filter(k=>st.wires.some(w=>w.includes('SW.'+k)));if(!ins.length)return;n%=1<<ins.length;ins.forEach((k,j)=>sw[k]=(n>>(ins.length-1-j))&1);n=(n+1)%(1<<ins.length);render()},acMs)});
+on('#bCsv',()=>{const ins=SW_.filter(k=>st.wires.some(w=>w.includes('SW.'+k))),outs=LEDS.filter(y=>st.wires.some(w=>w.includes('LED.'+y)));
+ if(!ins.length||!outs.length){toast('Wire a switch and an LED first');return}
+ let c=[...ins,...outs].join(',')+'\n';for(let r=0;r<1<<ins.length;r++){const s2={A:0,B:0,C:0,D:0};ins.forEach((k,j)=>s2[k]=(r>>(ins.length-1-j))&1);const m=simulate(st,s2,true);c+=[...ins.map(k=>s2[k]),...outs.map(y=>{const o=m.nv('LED.'+y);return o===1||o===0?o:'X'})].join(',')+'\n'}
+ dl(new Blob([c],{type:'text/csv'}),'truth-table.csv');toast('Truth table downloaded')});
+const beep=f=>{if(!snd)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.0001,t+.12);o.connect(g);g.connect(AC.destination);o.start();o.stop(t+.13)}catch(e){}};
+on('#bSnd',()=>{snd=!snd;const b=$('#bSnd');b.setAttribute('aria-pressed',snd);b.textContent='Sound: '+(snd?'ON':'OFF');beep(660)});
+const SPD=[[1500,'0.5×'],[900,'1×'],[450,'2×'],[200,'4×']];let si=1;
+on('#bSpd',()=>{si=(si+1)%SPD.length;acMs=SPD[si][0];$('#bSpd').textContent='Speed '+SPD[si][1];if(acT){$('#bAuto').click();$('#bAuto').click()}});
+const zoom=n=>{z=Math.min(2,Math.max(.6,Math.round(n*10)/10));svg.style.minWidth=Math.round(980*z)+'px';svg.style.width=Math.round(z*100)+'%';svg.style.maxWidth=Math.round(1400*z)+'px';$('#bZr').textContent=Math.round(z*100)+'%'};
+on('#bZi',()=>zoom(z+.1));on('#bZo',()=>zoom(z-.1));on('#bZr',()=>zoom(1));
+bw.addEventListener('wheel',e=>{if(e.ctrlKey){e.preventDefault();zoom(z+(e.deltaY<0?.1:-.1))}},{passive:false});
+on('#dx',dlgX);on('#dc',dlgX);
+$('#dlg').addEventListener('click',e=>{const d=$('#dlg'),r=d.getBoundingClientRect();if(e.target===d&&e.detail>0&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom))dlgX()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#dlg').open)dlgX()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(!b)return;const t=b.dataset.copy;const ok=()=>toast('Copied to clipboard');
+ try{navigator.clipboard.writeText(t).then(ok,()=>{throw 0})}catch(x){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(y){toast('Copy failed')}a.remove()}});
+const wired=()=>[SW_.filter(k=>st.wires.some(w=>w.includes('SW.'+k))),LEDS.filter(y=>st.wires.some(w=>w.includes('LED.'+y)))];
+const rowsOf=(ins,outs)=>{const R=[];for(let r=0;r<1<<ins.length;r++){const s2={A:0,B:0,C:0,D:0};ins.forEach((k,j)=>s2[k]=(r>>(ins.length-1-j))&1);const m=simulate(st,s2,true);R.push({s2,o:outs.map(y=>m.nv('LED.'+y))})}return R};
+on('#bFlow',()=>{flow=!flow;$('#bFlow').setAttribute('aria-pressed',flow);render();toast('Signal flow '+(flow?'on':'off'))});
+on('#bTim',()=>{const[ins,outs]=wired();if(!ins.length||!outs.length){toast('Wire a switch and an LED first');return}
+ const R=rowsOf(ins,outs),W=44,L=50,H=42,sg=[...ins.map(k=>({n:k,c:'#38bdf8',v:R.map(r=>r.s2[k])})),...outs.map((y,j)=>({n:y,c:'#4ade80',v:R.map(r=>r.o[j])}))];
+ let g='';R.forEach((r,i)=>g+=`<line x1="${L+i*W}" y1="8" x2="${L+i*W}" y2="${12+sg.length*H}" stroke="#ffffff1a"/><text x="${L+i*W+W/2}" y="${30+sg.length*H}" font-size="10" text-anchor="middle" style="fill:#8aa0b3">${ins.map(k=>r.s2[k]).join('')}</text>`);
+ sg.forEach((q,i)=>{const y0=22+i*H;let d='';q.v.forEach((v,r)=>{const y=v===1?y0:v===0?y0+22:y0+11;d+=(r?'V'+y:'M'+L+' '+y)+'H'+(L+(r+1)*W)});
+  g+=`<text x="8" y="${y0+16}" font-size="13" font-weight="700" style="fill:${q.c}">${q.n}</text><path d="${d}" fill="none" stroke="${q.c}" stroke-width="2.5" stroke-linejoin="round"/>`+q.v.map((v,r)=>v===1||v===0?'':`<text x="${L+r*W+W/2}" y="${y0+8}" font-size="11" font-weight="700" text-anchor="middle" style="fill:#f59e0b">X</text>`).join('')});
+ dlg('Timing diagram','<svg viewBox="0 0 '+(L+R.length*W+10)+' '+(42+sg.length*H)+'" style="width:100%;min-width:300px">'+g+'</svg><p class="lg">Each column is one input combination ('+ins.join('')+'). Blue = inputs, green = outputs.'+(sg.some(q=>q.v.some(v=>v!==0&&v!==1))?' Amber X = unknown level (check the Warnings panel).':'')+'</p>')});
+on('#bSop',()=>{const[ins,outs]=wired();if(!ins.length||!outs.length){toast('Wire a switch and an LED first');return}
+ const R=rowsOf(ins,outs);let h='';outs.forEach((y,j)=>{if(R.some(r=>r.o[j]!==0&&r.o[j]!==1)){h+=`<p><b>${y}</b> = unknown. The output is X for some input rows, so no expression can be read. Check the Warnings panel (power, floating inputs, conflicts).</p>`;return}const t=R.filter(r=>r.o[j]===1).map(r=>ins.map(k=>r.s2[k]?k:k+"'").join('·'));
+  const q=R.filter(r=>r.o[j]===1).map(r=>'('+ins.map(k=>r.s2[k]?k:'NOT '+k).join(' AND ')+')'),pe=y+' = '+(q.length===0?'0':q.length===R.length?'1':q.join(' OR '));
+  h+=`<p><b>${y}</b> = ${t.length===0?'0':t.length===R.length?'1':t.join(' + ')}<button class="cp" data-copy="${pe}" title="Copy in Expected-output format">Copy</button></p>`});
+ dlg('Boolean expression','<p class="lg">Sum of products read from your circuit’s truth table (A\' means NOT A, · means AND, + means OR).</p>'+h+'<p class="lg">Paste it into “Expected output” using AND, OR, NOT to check your design.</p>')});
+function trace(){const box=$('#trc'),dt=$('#trd');trc.clear();if(!box||!dt||!dt.open)return;
+ const f=sim.f,v=sim.nv,G=[];st.ics.forEach((t,i)=>{if(t)ICS[t].g.forEach((g,gi)=>G.push({ic:i+1,t,fn:ICS[t].fn,n:gi+1,g,o:g[g.length-1],key:(i+1)+'.'+gi}))});
+ const outs=LEDS.filter(y=>st.wires.some(w=>w.includes('LED.'+y)));
+ if(!outs.length){box.innerHTML='<p class="lg">Wire an LED to see how its signal is made, gate by gate.</p>';return}
+ const order=[],seen=new Set(),bd=x=>`<span class="tb ${x===1?'h':x===0?'l':'x'}">${x}</span>`;
+ const node=(pin,lab,path)=>{const val=v(pin),r=f(pin);let desc,kids='';
+  if(r===f('P5.1'))desc='+5V supply';else if(r===f('G.1'))desc='GND';
+  else{const k=SW_.find(k=>f('SW.'+k)===r);
+   if(k){desc='Switch '+k;trc.add('SW.'+k)}
+   else{const g=G.find(g=>f(`S${g.ic}.${g.o}`)===r);
+    if(!g)desc='<small>not driven</small>';
+    else if(path.includes(g.key))desc='<small>feedback loop</small>';
+    else{const ins=g.g.slice(0,-1),sub=ins.map(p=>node(`S${g.ic}.${p}`,'pin '+p,[...path,g.key]));
+     trc.add(`S${g.ic}.${g.o}`);ins.forEach(p=>trc.add(`S${g.ic}.${p}`));
+     if(!seen.has(g.key)){seen.add(g.key);order.push({g,i:ins.map(p=>v(`S${g.ic}.${p}`)),o:v(`S${g.ic}.${g.o}`)})}
+     desc=`<b>${g.fn.toUpperCase()}</b> · IC${g.ic} ${g.t}, gate ${g.n}`;kids='<ul>'+sub.join('')+'</ul>'}}}
+  return`<li>${bd(val)} <small>${lab} ←</small> ${desc}${kids}</li>`};
+ const trees=outs.map(y=>{trc.add('LED.'+y);return'<ul class="tr">'+node('LED.'+y,'LED '+y,[])+'</ul>'}).join('');
+ box.innerHTML=trees+(order.length?'<p class="lg">Evaluation order</p><ol class="tr">'+order.map(o=>`<li>${o.g.fn.toUpperCase()}(${o.i.join(', ')}) → ${bd(o.o)} <small>IC${o.g.ic} gate ${o.g.n}</small></li>`).join('')+'</ol><p class="lg">Amber pins on the board belong to this trace.</p>':'<p class="lg">No gates here: the LED connects straight to a switch or supply.</p>')}
+on('#bTrc',()=>{const d=$('#trd');d.open=!d.open;$('#bTrc').setAttribute('aria-pressed',d.open);if(d.open){$('#right').classList.remove('off');d.scrollIntoView({block:'nearest'})}render()});
+$('#trd').addEventListener('toggle',()=>{$('#bTrc').setAttribute('aria-pressed',$('#trd').open);render()});
+const uiSet=l=>{document.documentElement.dataset.theme=l?'light':'dark';const b=$('#bUi');b.setAttribute('aria-pressed',l);b.textContent=l?'Dark theme':'Light theme'};
+uiSet(document.documentElement.dataset.theme==='light');
+on('#bUi',()=>{const l=document.documentElement.dataset.theme!=='light';uiSet(l);LS.set('ll.ui',l?'light':'dark');toast(l?'Light theme: good for bright classrooms':'Dark theme')});
+const fitBoard=()=>{const w=Math.max(560,Math.floor(Math.min(bw.clientWidth-24,(bw.clientHeight-24)*1000/540)));svg.style.minWidth=w+'px';svg.style.width=w+'px';svg.style.maxWidth='none';$('#bZr').textContent='Fit'};
+const botSet=off=>{$('#bot').classList.toggle('off',off);$('#bBot').setAttribute('aria-pressed',off);off?fitBoard():zoom(z);LS.set('ll.bot',off?'1':'0')};
+const hdrSet=(m,say)=>{$('header').classList.toggle('min',m);const b=$('#bHdr');b.setAttribute('aria-expanded',!m);b.textContent=m?'▼ Show toolbar':'▲ Hide toolbar';LS.set('ll.hdr',m?'1':'0');if($('#bot').classList.contains('off'))fitBoard();if(say&&m)toast('Toolbar hidden. Ctrl+K or the Commands button still finds every action')};
+on('#bBot',()=>botSet(!$('#bot').classList.contains('off')));on('#bHdr',()=>hdrSet(!$('header').classList.contains('min'),true));
+addEventListener('resize',()=>{if($('#bot').classList.contains('off'))fitBoard()});
+if(LS.get('ll.bot')==='1')botSet(true);if(LS.get('ll.hdr')==='1')hdrSet(true);
+const copyT=t=>{const ok=()=>toast('Copied to clipboard'),fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(y){prompt('Copy this link',t)}a.remove()};try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}};
+on('#bShare',()=>{try{copyT(location.href.split('#')[0]+'#c='+btoa(unescape(encodeURIComponent(JSON.stringify({...pack(),cur,flt})))))}catch(e){toast('Could not create link')}});
+on('#bSvg',()=>{const c=svg.cloneNode(true);c.setAttribute('xmlns','http://www.w3.org/2000/svg');c.setAttribute('viewBox','0 0 1000 540');c.setAttribute('width','1000');c.setAttribute('height','540');c.removeAttribute('style');const t=c.querySelector('#tmp');t&&t.remove();dl(new Blob([c.outerHTML],{type:'image/svg+xml'}),'logiclab-circuit.svg');toast('SVG saved')});
+on('#bStep',()=>{const[ins]=wired();if(!ins.length){toast('Wire at least one switch first');return}let n=0;ins.forEach((k,j)=>n|=(sw[k]?1:0)<<(ins.length-1-j));n=(n+1)%(1<<ins.length);ins.forEach((k,j)=>sw[k]=(n>>(ins.length-1-j))&1);render();toast('Inputs '+ins.join('')+' = '+ins.map(k=>sw[k]).join(''))});
+/* command palette (Ctrl+K) */
+const cmd=document.createElement('div');cmd.id='cmd';cmd.hidden=true;cmd.innerHTML='<div role="dialog" aria-modal="true" aria-label="Command palette"><input id="cmi" placeholder="Type an action, e.g. timing, zoom, share…" aria-label="Search actions" autocomplete="off"><ul id="cml"></ul></div>';document.body.appendChild(cmd);
+let cmI=0,cmL=[];
+const cmDraw=()=>{const q=$('#cmi').value.toLowerCase().trim();cmL=[...document.querySelectorAll('header button[id]')].filter(b=>b.id!=='bCmd'&&!b.disabled).map(b=>({b,t:(b.textContent+' '+(b.title||'')).toLowerCase(),n:b.textContent.trim(),g:(b.closest('.grp')||b).getAttribute('aria-label')||'Toolbar'})).filter(o=>!q||q.split(' ').every(w=>o.t.includes(w)));cmI=Math.min(cmI,Math.max(0,cmL.length-1));$('#cml').innerHTML=cmL.map((o,i)=>`<li data-i="${i}" class="${i===cmI?'on':''}"><span>${esc(o.n)}</span><small>${esc(o.g)}</small></li>`).join('')||'<li><small>No matching action</small></li>'};
+const cmOpen=()=>{cmd.hidden=false;$('#cmi').value='';cmI=0;cmDraw();$('#cmi').focus()},cmClose=()=>{cmd.hidden=true},cmRun=i=>{const o=cmL[i];if(o){cmClose();o.b.click()}};
+on('#bCmd',cmOpen);$('#cmi').addEventListener('input',()=>{cmI=0;cmDraw()});
+$('#cmi').addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();cmI=(cmI+(e.key==='ArrowDown'?1:-1)+cmL.length)%Math.max(1,cmL.length);cmDraw();const a=$('#cml .on');a&&a.scrollIntoView({block:'nearest'})}else if(e.key==='Enter'){e.preventDefault();cmRun(cmI)}else if(e.key==='Escape'){cmClose()}});
+$('#cml').addEventListener('click',e=>{const l=e.target.closest('li[data-i]');l&&cmRun(+l.dataset.i)});cmd.addEventListener('click',e=>{if(e.target===cmd)cmClose()});
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();cmd.hidden?cmOpen():cmClose()}});
+try{const m=location.hash.match(/^#c=(.+)$/);if(m){const o=JSON.parse(decodeURIComponent(escape(atob(m[1]))));if(!check(o)){LS.set('ll.auto',JSON.stringify(o));history.replaceState(null,'',location.pathname+location.search)}}}catch(e){}
+restore()||load(bld(EXPS[0]),EXPS[0].e,-1);
+if(!LS.get('ll.seen')){LS.set('ll.seen','1');dlg('Welcome to LogicLab','<p>Build real logic circuits on a virtual trainer board.</p><ol class="wt"><li>Pick an experiment on the left, or choose ICs in the right panel.</li><li>Click one pin, then another, to place a wire. Dragging also works.</li><li>Click the switches to set inputs and watch the LEDs.</li><li>Use <b>Step</b>, <b>Auto-count</b> and <b>Timing diagram</b> to check every input combination.</li><li>Press <b>Ctrl+K</b> to search any action, or <b>?</b> for help.</li></ol>')}
+</script></body></html>
