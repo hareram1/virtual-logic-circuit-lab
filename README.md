@@ -424,13 +424,6 @@ Include as much information as possible:
 
 ---
 
-## Author
-
-**Hareram**
-
-Made with ❤️ for digital electronics and computer science learners.
-
----
 
 <p align="center">
   <b>Learn the logic. Build the circuit. Understand the system.</b>
