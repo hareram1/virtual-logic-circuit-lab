@@ -378,37 +378,6 @@ Potential future development directions:
 
 ---
 
-## Contributing
-
-Contributions, suggestions, bug reports, and feature requests are welcome.
-
-If you would like to contribute:
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Make your changes.
-4. Test your implementation.
-5. Submit a pull request.
-
-For major changes, please open an issue first to discuss your proposed feature.
-
----
-
-## Issues & Feedback
-
-If you find a bug, experience unexpected behavior, or have an idea for improvement, please open a GitHub Issue.
-
-Include as much information as possible:
-
-- Description of the issue
-- Steps to reproduce it
-- Expected behavior
-- Actual behavior
-- Browser and operating system
-- Screenshots, if applicable
-
----
-
 
 <p align="center">
   <b>Learn the logic. Build the circuit. Understand the system.</b>
