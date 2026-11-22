@@ -9,6 +9,9 @@
 </p>
 
 ---
+![LogicLab Main Interface](assets/screenshots/logiclab-main.png)
+
+---
 
 ## Overview
 
