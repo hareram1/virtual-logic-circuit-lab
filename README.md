@@ -377,8 +377,3 @@ Potential future development directions:
 - Circuit gallery and sharing improvements
 
 ---
-
-
-<p align="center">
-  <b>Learn the logic. Build the circuit. Understand the system.</b>
-</p>
