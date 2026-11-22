@@ -222,24 +222,6 @@ Explore the truth table, signal trace, timing diagram, and Boolean expression to
 
 ---
 
-## Quick Start
-
-No installation or build process is required.
-
-```bash
-git clone https://github.com/YOUR-USERNAME/logiclab-virtual-digital-logic-trainer.git
-```
-
-Navigate to the project directory and open:
-
-```text
-index.html
-```
-
-Alternatively, use a local development server such as VS Code Live Server.
-
----
-
 ## Technology Stack
 
 | Technology | Purpose |
