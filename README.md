@@ -421,14 +421,6 @@ Include as much information as possible:
 
 ---
 
-## License
-
-This project is licensed under the MIT License.
-
-See [`LICENSE`](LICENSE) for details.
-
----
-
 ## Author
 
 **Hareram**
