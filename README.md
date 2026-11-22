@@ -343,15 +343,18 @@ Screenshots will be added here to demonstrate the interface and features.
 
 ### Main Interface
 
-> Add `assets/screenshots/logiclab-main.png`
+![LogicLab Main Interface](assets/screenshots/logiclab-main.png)
+
 
 ### Breadboard Mode
 
-> Add `assets/screenshots/breadboard-view.png`
+![LogicLab Main Interface](assets/screenshots/breadboard-view.png)
+
 
 ### Quiz Mode
 
-> Add `assets/screenshots/logiclab-quiz.png`
+![LogicLab Main Interface](assets/screenshots/logiclab-quiz.png)
+
 
 ---
 
