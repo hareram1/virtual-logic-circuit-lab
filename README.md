@@ -15,6 +15,9 @@
 
 ## Overview
 
+**Developed Using an AI-assisted workflow to accelerate implementation and iteration.**
+
+
 **LogicLab** is a browser-based virtual digital logic trainer designed to help students understand digital electronics and Boolean logic through hands-on experimentation.
 
 Instead of only studying logic gate diagrams and truth tables theoretically, LogicLab lets users interact with switches, connect circuit pins, simulate logic gates, observe LED outputs, build circuits, and explore how digital logic works in real time.
